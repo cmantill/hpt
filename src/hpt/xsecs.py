@@ -297,6 +297,15 @@ xsecs["Zto2Q-2Jets_PTQQ-400to600_2J"] = 2.683
 xsecs["Zto2Q-2Jets_PTQQ-600_1J"] = 0.08717
 xsecs["Zto2Q-2Jets_PTQQ-600_2J"] = 0.4459
 
+xsecs["Zto2Nu-2Jets_PTNuNu-100to200_1J"] = 87.89
+xsecs["Zto2Nu-2Jets_PTNuNu-100to200_2J"] = 101.4
+xsecs["Zto2Nu-2Jets_PTNuNu-200to400_1J"] = 6.314
+xsecs["Zto2Nu-2Jets_PTNuNu-200to400_2J"] = 13.81
+xsecs["Zto2Nu-2Jets_PTNuNu-400to600_1J"] = 0.2154
+xsecs["Zto2Nu-2Jets_PTNuNu-400to600_2J"] = 0.833 
+xsecs["Zto2Nu-2Jets_PTNuNu-600_1J"] = 0.02587 
+xsecs["Zto2Nu-2Jets_PTNuNu-600_2J"] = 0.1574 
+
 xsecs["WtoLNu-4Jets"] = 55390.0
 xsecs["WtoLNu-2Jets"] = 64481.58
 xsecs["WtoLNu-2Jets_0J"] = 55760.0

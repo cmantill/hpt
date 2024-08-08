@@ -235,10 +235,19 @@ class ptSkimmer(SkimmerABC):
 
         sel_all = selection.all(*selection.names) if len(selection.names) else np.ones(len(events)).astype(bool)
 
+        #HERE
+        # Dictionary comprehension might look like this
         skimmed_events = {
-            key: value.reshape(len(skimmed_events["weight"]), -1)[sel_all]
-            for (key, value) in skimmed_events.items()
+            #print(key, value, "Value shape before reshape:", value.shape[0], "Weight length:", len(skimmed_events["weight"]))
+            print(f"sel_all shape: {sel_all.shape}, value shape: {value.shape}")
+            for key, value in skimmed_events.items()  # Adjust as needed
         }
+
+        
+        #skimmed_events = {
+        #    key: value.reshape(len(skimmed_events["weight"]), -1)[sel_all]
+        #    for (key, value) in skimmed_events.items()
+        #}
 
         dataframe = self.to_pandas(skimmed_events)
         fname = events.behavior["__events_factory__"]._partition_key.replace("/", "_") + ".parquet"
