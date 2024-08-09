@@ -196,7 +196,7 @@ def gen_selection_V(
     print("vs type:", type(vs))  # Print type of `vs`
     print(type(vs[0, :]))        # Print type of the element of vs
     print(ak.firsts(vs))
-    vs_flat = ak.flatten(vs)
+    vs_flat = ak.firsts(vs)
 
     GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
     
