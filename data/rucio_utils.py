@@ -142,7 +142,8 @@ def get_dataset_files(
                     found = True
 
             if not found:
-                print(f"No SITE available in the whitelist for file {filedata['name']}")
+                print(f"No SITE available in the whitelist for file {filedata['name']} - skipping dataset...")
+                break
         else:
             possible_sites = list(rses.keys())
             if blacklist_sites:

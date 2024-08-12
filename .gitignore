@@ -169,3 +169,5 @@ cython_debug/
 
 data/.sites_map.json
 outfiles/
+
+*~
