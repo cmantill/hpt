@@ -38,6 +38,7 @@ def get_rucio_client():
         nativeClient = Client(
             rucio_host="https://cms-rucio.cern.ch",
             auth_host="https://cms-rucio-auth.cern.ch",
+            #account='ghamilto',
             account=getpass.getuser(),
             creds={"client_cert": get_proxy_path(), "client_key": get_proxy_path()},
             auth_type="x509",
