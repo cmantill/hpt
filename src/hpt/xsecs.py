@@ -304,7 +304,12 @@ xsecs["Zto2Nu-2Jets_PTNuNu-200to400_2J"] = 13.81
 xsecs["Zto2Nu-2Jets_PTNuNu-400to600_1J"] = 0.2154
 xsecs["Zto2Nu-2Jets_PTNuNu-400to600_2J"] = 0.833 
 xsecs["Zto2Nu-2Jets_PTNuNu-600_1J"] = 0.02587 
-xsecs["Zto2Nu-2Jets_PTNuNu-600_2J"] = 0.1574 
+xsecs["Zto2Nu-2Jets_PTNuNu-600_2J"] = 0.1574
+
+xsecs["Zto2Nu-4Jets_HT-100to200"] = 273.7
+xsecs["Zto2Nu-4Jets_HT-200to400"] = 75.96
+xsecs["Zto2Nu-4Jets_HT-400to800"] = 13.19
+xsecs["Zto2Nu-4Jets_HT-800to1500"] = 1.364
 
 xsecs["WtoLNu-4Jets"] = 55390.0
 xsecs["WtoLNu-2Jets"] = 64481.58
