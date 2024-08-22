@@ -19,7 +19,7 @@ from .objects import (
     get_ak8jets,
 )
 from .SkimmerABC import SkimmerABC
-from .utils import P4, add_selection, pad_val
+from ..utils import P4, add_selection, pad_val
 
 
 # mapping samples to the appropriate function for doing gen-level selections
@@ -128,6 +128,9 @@ class ptSkimmer(SkimmerABC):
             if d in dataset:
                 vars_dict = gen_selection_dict[d](events, ak4_jets, fatjets, selection_args, P4)
                 genVars = {**genVars, **vars_dict}
+
+        genVars["LHE_HT"] = events.LHE.HT
+        genVars["LHE_Vpt"] = events.LHE.Vpt
 
         # used for normalization to cross section below
         gen_selected = (

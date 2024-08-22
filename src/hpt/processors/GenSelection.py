@@ -11,7 +11,7 @@ import numpy as np
 from coffea.nanoevents.methods.base import NanoEventsArray
 from coffea.nanoevents.methods.nanoaod import FatJetArray, JetArray
 
-from .utils import add_selection, pad_val
+from ..utils import add_selection, pad_val
 
 d_PDGID = 1
 u_PDGID = 2
