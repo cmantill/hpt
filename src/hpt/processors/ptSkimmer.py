@@ -129,8 +129,10 @@ class ptSkimmer(SkimmerABC):
                 vars_dict = gen_selection_dict[d](events, ak4_jets, fatjets, selection_args, P4)
                 genVars = {**genVars, **vars_dict}
 
-        genVars["LHE_HT"] = events.LHE.HT
-        genVars["LHE_Vpt"] = events.LHE.Vpt
+
+        # Add LHE_HT and LHE_Vpt to genVars
+        genVars["LHE_HT"] = events.LHE.HT.to_numpy()
+        genVars["LHE_Vpt"] = events.LHE.Vpt.to_numpy()
 
         # used for normalization to cross section below
         gen_selected = (
