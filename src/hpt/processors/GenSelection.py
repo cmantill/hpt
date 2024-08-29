@@ -11,7 +11,7 @@ import numpy as np
 from coffea.nanoevents.methods.base import NanoEventsArray
 from coffea.nanoevents.methods.nanoaod import FatJetArray, JetArray
 
-from .utils import add_selection, pad_val
+from ..utils import add_selection, pad_val
 
 d_PDGID = 1
 u_PDGID = 2
@@ -192,8 +192,14 @@ def gen_selection_V(
         ((abs(events.GenPart.pdgId) == W_PDGID) | (abs(events.GenPart.pdgId) == Z_PDGID))
         * events.GenPart.hasFlags(GEN_FLAGS)
     ]
-    GenVVars = {f"GenV{key}": vs[var].to_numpy() for (var, key) in skim_vars.items()}
+    print("vs: ", vs)
+    print("vs type:", type(vs))  # Print type of `vs`
+    print(type(vs[0, :]))        # Print type of the element of vs
+    print(ak.firsts(vs))
+    vs_flat = ak.firsts(vs)
 
+    GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
+    
     matched_to_v = fatjets.metric_table(vs) < 0.8
     is_fatjet_matched = ak.any(matched_to_v, axis=2)
 

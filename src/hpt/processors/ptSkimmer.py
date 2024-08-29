@@ -12,14 +12,14 @@ import numpy as np
 from coffea import processor
 from coffea.analysis_tools import PackedSelection, Weights
 
-from . import utils
+from .. import utils
 from hpt import common_vars
 from .GenSelection import gen_selection_V, gen_selection_HHbbbb, gen_selection_Hbb
 from .objects import (
     get_ak8jets,
 )
 from .SkimmerABC import SkimmerABC
-from .utils import P4, add_selection, pad_val
+from ..utils import P4, add_selection, pad_val
 
 
 # mapping samples to the appropriate function for doing gen-level selections
@@ -129,6 +129,11 @@ class ptSkimmer(SkimmerABC):
                 vars_dict = gen_selection_dict[d](events, ak4_jets, fatjets, selection_args, P4)
                 genVars = {**genVars, **vars_dict}
 
+
+        # Add LHE_HT and LHE_Vpt to genVars
+        genVars["LHE_HT"] = events.LHE.HT.to_numpy()
+        genVars["LHE_Vpt"] = events.LHE.Vpt.to_numpy()
+
         # used for normalization to cross section below
         gen_selected = (
             selection.all(*selection.names)
@@ -235,6 +240,10 @@ class ptSkimmer(SkimmerABC):
 
         sel_all = selection.all(*selection.names) if len(selection.names) else np.ones(len(events)).astype(bool)
 
+        #HERE
+        
+
+        
         skimmed_events = {
             key: value.reshape(len(skimmed_events["weight"]), -1)[sel_all]
             for (key, value) in skimmed_events.items()

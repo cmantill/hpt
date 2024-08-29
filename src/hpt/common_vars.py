@@ -15,3 +15,6 @@ LUMI = {
 }
 
 norm_preserving_weights = ["genweight", "pileup", "ISRPartonShower", "FSRPartonShower"]
+
+
+data_key = "data"
