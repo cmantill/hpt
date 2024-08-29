@@ -129,13 +129,16 @@ def remove_variation_suffix(var: str):
     return var
 
 
+import warnings
+import pandas as pd
+from pathlib import Path
+
 def load_samples(
     data_dir: Path,
-    samples: dict[str, str],
+    samples: list[str],
     year: str,
     filters: list = None,
     columns: list = None,
-    # select_testing: bool = False,
     load_weight_noxsec: bool = True,
 ) -> dict[str, pd.DataFrame]:
     """
@@ -144,64 +147,58 @@ def load_samples(
 
     Args:
         data_dir (str): path to data directory.
-        samples (Dict[str, str]): dictionary of samples and selectors to load.
+        samples (List[str]): list of sample names to load.
         year (str): year.
         filters (List): Optional filters when loading data.
         columns (List): Optional columns to load.
 
     Returns:
-        Dict[str, pd.DataFrame]: ``events_dict`` dictionary of events dataframe for each sample.
-
+        Dict[str, pd.DataFrame]: Dictionary of events dataframe for each sample.
     """
     data_dir = Path(data_dir) / year
     full_samples_list = listdir(data_dir)  # get all directories in data_dir
     events_dict = {}
 
-    # label - key of sample in events_dict
-    # selector - string used to select directories to load in for this sample
-    for label, selector in samples.items():
-        # important to check that samples have been normalized properly
-        load_columns = columns
-        if label != "data" and load_weight_noxsec:
-            load_columns = columns + format_columns([("weight_noxsec", 1)])
-
-        events_dict[label] = []  # list of directories we load in for this sample
+    for sample_name in samples:
+        # Initialize the events list for the sample
+        events_list = []
+        # Check if sample directory exists in full_samples_list
         for sample in full_samples_list:
-            # check if this directory passes our selector string
-            if not check_selector(sample, selector):
+            if not check_selector(sample, sample_name):
                 continue
 
             sample_path = data_dir / sample
             parquet_path, pickles_path = sample_path / "parquet", sample_path / "pickles"
 
-            # no parquet directory?
+            # No parquet directory?
             if not parquet_path.exists():
                 warnings.warn(f"No parquet directory for {sample}!", stacklevel=1)
                 continue
 
             print(f"Loading {sample}")
-            events = pd.read_parquet(parquet_path, filters=filters, columns=load_columns)
+            events = pd.read_parquet(parquet_path, filters=filters, columns=columns)
 
-            # no events?
+            # No events?
             if not len(events):
                 warnings.warn(f"No events for {sample}!", stacklevel=1)
                 continue
 
-            # normalize by total events
-            if label == data_key:
-                events["finalWeight"] = events["weight"]
-            else:
+            # Normalize by total events
+            if load_weight_noxsec and sample_name != "data":
                 n_events = get_nevents(pickles_path, year, sample)
                 events["weight_nonorm"] = events["weight"]
                 events["finalWeight"] = events["weight"] / n_events
+            else:
+                events["finalWeight"] = events["weight"]
 
-            events_dict[label].append(events)
+            events_list.append(events)
             print(f"Loaded {sample: <50}: {len(events)} entries")
 
-        if len(events_dict[label]):
-            events_dict[label] = pd.concat(events_dict[label])
+        # Combine all DataFrames for the sample
+        if events_list:
+            events_dict[sample_name] = pd.concat(events_list)
         else:
-            del events_dict[label]
+            warnings.warn(f"No valid events loaded for sample {sample_name}.", stacklevel=1)
 
     return events_dict
 
@@ -247,3 +244,19 @@ def get_nevents(pickles_path, year, sample_name):
             nevents += out_dict[year][sample_name]["nevents"]
 
     return nevents
+def check_selector(sample: str, selector: str | list[str]):
+    if not isinstance(selector, (list, tuple)):
+        selector = [selector]
+
+    for s in selector:
+        if s.endswith("?"):
+            if s[:-1] == sample:
+                return True
+        elif s.startswith("*"):
+            if s[1:] in sample:
+                return True
+        else:
+            if sample.startswith(s):
+                return True
+
+    return False
