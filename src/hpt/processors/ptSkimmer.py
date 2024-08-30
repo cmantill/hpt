@@ -17,6 +17,8 @@ from hpt import common_vars
 from .GenSelection import gen_selection_V, gen_selection_HHbbbb, gen_selection_Hbb
 from .objects import (
     get_ak8jets,
+    veto_muons,
+    veto_electrons,
 )
 from .SkimmerABC import SkimmerABC
 from ..utils import P4, add_selection, pad_val
@@ -56,7 +58,6 @@ class ptSkimmer(SkimmerABC):
             "t32": "Tau3OverTau2",
             "rawFactor": "rawFactor",
             "msoftdrop": "msoftdrop",
-            "particleNet_mass": "particleNet_mass",
         },
     }
 
@@ -115,6 +116,9 @@ class ptSkimmer(SkimmerABC):
         fatjets = get_ak8jets(events.FatJet)
 
         ak4_jets = events.Jet
+
+        veto_muon_sel = veto_muons(events.Muon)
+        veto_electron_sel = veto_electrons(events.Electron)
         
         print("Object definition", f"{time.time() - start:.2f}")
 
@@ -207,6 +211,33 @@ class ptSkimmer(SkimmerABC):
         #########################
 
         print("Selection", f"{time.time() - start:.2f}")
+
+        # OR-ing HLT triggers
+        for trigger in self.HLTs[year]:
+            if trigger not in events.HLT.fields:
+                logger.warning(f"Missing HLT {trigger}!")
+
+        HLT_triggered = np.any(
+            np.array(
+                [events.HLT[trigger] for trigger in self.HLTs[year] if trigger in events.HLT.fields]
+            ),
+            axis=0,
+        )
+
+
+        #in HH4b code there is an if region == signal here
+
+        # >=2 AK8 jets passing selections
+        add_selection("ak8_numjets", (ak.num(fatjets) >= 2), *selection_args)
+
+        #add_selection("ak8bb_txbb0", cut_txbb, *selection_args)
+
+        # 0 veto leptons
+        add_selection(
+            "0lep",
+            (ak.sum(veto_muon_sel, axis=1) == 0) & (ak.sum(veto_electron_sel, axis=1) == 0),
+            *selection_args,
+        )
 
         ######################
         # Weights
