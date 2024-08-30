@@ -253,7 +253,7 @@ class ptSkimmer(SkimmerABC):
         print("Selection", f"{time.time() - start:.2f}")
 
         # OR-ing HLT triggers
-        for trigger in self.HLTs: #self.HLTs[year]:
+        for trigger in self.HLTs[year]:
             if trigger not in events.HLT.fields:
                 logger.warning(f"Missing HLT {trigger}!")
 
