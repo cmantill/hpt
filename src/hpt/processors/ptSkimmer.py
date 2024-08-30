@@ -69,6 +69,44 @@ class ptSkimmer(SkimmerABC):
 
         self.XSECS = xsecs if xsecs is not None else {}  # in pb
 
+        self.HLTs = {
+            "2023": [
+                # Add triggers here for the year 2023
+                
+                # offline triggers
+                "QuadPFJet70_50_40_35_PFBTagParticleNet_2BTagSum0p65",
+                "PFHT1050",
+                "AK8PFJet230_SoftDropMass40_PFAK8ParticleNetBB0p35",
+                "AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35",
+                "AK8PFJet275_SoftDropMass40_PFAK8ParticleNetBB0p35",
+                "AK8PFJet230_SoftDropMass40",
+                "AK8PFJet425_SoftDropMass40",
+                "AK8PFJet400_SoftDropMass40",
+                "AK8DiPFJet250_250_MassSD50",
+                "AK8DiPFJet260_260_MassSD30",
+                "AK8PFJet420_MassSD30",
+                "AK8PFJet230_SoftDropMass40_PNetBB0p06",
+                "AK8PFJet230_SoftDropMass40_PNetBB0p10",
+                "AK8PFJet250_SoftDropMass40_PNetBB0p06",
+                # parking triggers
+                # HHparking
+                "PFHT280_QuadPFJet30_PNet2BTagMean0p55",
+                # VBFparking
+                # https://its.cern.ch/jira/browse/CMSHLT-3058
+                "DiJet110_35_Mjj650_PFMET110",
+                "TripleJet110_35_35_Mjj650_PFMET110",
+                "VBF_DiPFJet80_45_Mjj650_PFMETNoMu85",
+                "VBF_DiPFJet110_35_Mjj650",
+                "VBF_DiPFJet110_35_Mjj650_TriplePFJet",
+                "VBF_DiPFJet110_40_Mjj1000_Detajj3p5",
+                "VBF_DiPFJet110_40_Mjj1000_Detajj3p5_TriplePFJet",
+                "VBF_DiJet_60_30_Mass500_DiJet50",
+                "VBF_DiJet_110_35_Mass620",
+                # SingleMuonparking
+                "Mu12_IP6",
+            ],
+        }
+
         # https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Run_3_recommendations
         self.met_filters = [
             "goodVertices",
@@ -79,6 +117,8 @@ class ptSkimmer(SkimmerABC):
             "eeBadScFilter",
             "hfNoisyHitsFilt",
         ]
+
+
 
         self._accumulator = processor.dict_accumulator({})
 
