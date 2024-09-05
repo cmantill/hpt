@@ -91,20 +91,20 @@ class ptSkimmer(SkimmerABC):
                 "AK8PFJet250_SoftDropMass40_PNetBB0p06",
                 # parking triggers
                 # HHparking
-                "PFHT280_QuadPFJet30_PNet2BTagMean0p55",
+                #"PFHT280_QuadPFJet30_PNet2BTagMean0p55",
                 # VBFparking
                 # https://its.cern.ch/jira/browse/CMSHLT-3058
-                "DiJet110_35_Mjj650_PFMET110",
-                "TripleJet110_35_35_Mjj650_PFMET110",
-                "VBF_DiPFJet80_45_Mjj650_PFMETNoMu85",
-                "VBF_DiPFJet110_35_Mjj650",
-                "VBF_DiPFJet110_35_Mjj650_TriplePFJet",
-                "VBF_DiPFJet110_40_Mjj1000_Detajj3p5",
-                "VBF_DiPFJet110_40_Mjj1000_Detajj3p5_TriplePFJet",
-                "VBF_DiJet_60_30_Mass500_DiJet50",
-                "VBF_DiJet_110_35_Mass620",
+                #"DiJet110_35_Mjj650_PFMET110",
+                #"TripleJet110_35_35_Mjj650_PFMET110",
+                #"VBF_DiPFJet80_45_Mjj650_PFMETNoMu85",
+                #"VBF_DiPFJet110_35_Mjj650",
+                #"VBF_DiPFJet110_35_Mjj650_TriplePFJet",
+                #"VBF_DiPFJet110_40_Mjj1000_Detajj3p5",
+                #"VBF_DiPFJet110_40_Mjj1000_Detajj3p5_TriplePFJet",
+                #"VBF_DiJet_60_30_Mass500_DiJet50",
+                #"VBF_DiJet_110_35_Mass620",
                 # SingleMuonparking
-                "Mu12_IP6",
+                #"Mu12_IP6",
             ],
         }
 
@@ -177,8 +177,8 @@ class ptSkimmer(SkimmerABC):
 
 
         # Add LHE_HT and LHE_Vpt to genVars
-        genVars["LHE_HT"] = events.LHE.HT.to_numpy()
-        genVars["LHE_Vpt"] = events.LHE.Vpt.to_numpy()
+        #genVars["LHE_HT"] = events.LHE.HT.to_numpy()
+        #genVars["LHE_Vpt"] = events.LHE.Vpt.to_numpy()
 
         # used for normalization to cross section below
         gen_selected = (
@@ -215,20 +215,20 @@ class ptSkimmer(SkimmerABC):
             "AK8PFJet250_SoftDropMass40_PNetBB0p06",
             # parking triggers
             # HHparking
-            "PFHT280_QuadPFJet30_PNet2BTagMean0p55",
+            #"PFHT280_QuadPFJet30_PNet2BTagMean0p55",
             # VBFparking
             # https://its.cern.ch/jira/browse/CMSHLT-3058
-            "DiJet110_35_Mjj650_PFMET110",
-            "TripleJet110_35_35_Mjj650_PFMET110",
-            "VBF_DiPFJet80_45_Mjj650_PFMETNoMu85",
-            "VBF_DiPFJet110_35_Mjj650",
-            "VBF_DiPFJet110_35_Mjj650_TriplePFJet",
-            "VBF_DiPFJet110_40_Mjj1000_Detajj3p5",
-            "VBF_DiPFJet110_40_Mjj1000_Detajj3p5_TriplePFJet",
-            "VBF_DiJet_60_30_Mass500_DiJet50",
-            "VBF_DiJet_110_35_Mass620",
+            #"DiJet110_35_Mjj650_PFMET110",
+            #"TripleJet110_35_35_Mjj650_PFMET110",
+            #"VBF_DiPFJet80_45_Mjj650_PFMETNoMu85",
+            #"VBF_DiPFJet110_35_Mjj650",
+            #"VBF_DiPFJet110_35_Mjj650_TriplePFJet",
+            #"VBF_DiPFJet110_40_Mjj1000_Detajj3p5",
+            #"VBF_DiPFJet110_40_Mjj1000_Detajj3p5_TriplePFJet",
+            #"VBF_DiJet_60_30_Mass500_DiJet50",
+            #"VBF_DiJet_110_35_Mass620",
             # SingleMuonparking
-            "Mu12_IP6",
+            #"Mu12_IP6",
         ]
         zeros = np.zeros(len(events), dtype="bool")
         HLTVars = {
