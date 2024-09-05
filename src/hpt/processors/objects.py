@@ -242,8 +242,7 @@ def get_ak8jets(fatjets: FatJetArray):
 # ak8 jet definition
 def good_ak8jets(fatjets: FatJetArray, pt: float, eta: float, msd: float, mreg: float):
     fatjets_fields = fatjets.fields
-    legacy = "particleNetLegacy_mass" in fatjets_fields
-    mreg_val = fatjets["particleNet_mass_legacy"] if legacy else fatjets["particleNet_mass"]
+    mreg_val = fatjets["particleNet_mass"]
 
     fatjet_sel = (
         fatjets.isTight

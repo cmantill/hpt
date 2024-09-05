@@ -17,6 +17,7 @@ from hpt import common_vars
 from .GenSelection import gen_selection_V, gen_selection_HHbbbb, gen_selection_Hbb
 from .objects import (
     get_ak8jets,
+    good_ak8jets,
     veto_muons,
     veto_electrons,
 )
@@ -154,6 +155,7 @@ class ptSkimmer(SkimmerABC):
 
         num_fatjets = 2  # number to save
         fatjets = get_ak8jets(events.FatJet)
+        fatjets = good_ak8jets(fatjets, 300, 2.5, 40, 40)
 
         ak4_jets = events.Jet
 
@@ -268,7 +270,7 @@ class ptSkimmer(SkimmerABC):
         #in HH4b code there is an if region == signal here
 
         # >=2 AK8 jets passing selections
-        add_selection("ak8_numjets", (ak.num(fatjets) >= 2), *selection_args)
+        add_selection("ak8_numjets", (ak.num(fatjets) >= 1), *selection_args)
 
         #add_selection("ak8bb_txbb0", cut_txbb, *selection_args)
 
