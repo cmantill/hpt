@@ -210,7 +210,6 @@ def gen_selection_V(
 
     GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
     #GenVVars["GenVChildren"] = abs(vs_children.pdgId[:, :, 0]).to_numpy()
-    GenVVars["GenVChildren"] = vs_children.pdgId[:, :, 0]
     GenVVars["GenVis_bb"] = vs_flat["is_bb"].to_numpy()
     GenVVars["GenVis_cc"] = vs_flat["is_cc"].to_numpy()
     GenVVars["GenVis_cs"] = vs_flat["is_cs"].to_numpy()
