@@ -217,8 +217,6 @@ def gen_selection_V(
     # Set is_bb flag to True if exactly 2 b-quarks are present
     is_bb = (b_quark_count == 2)
 
-    # Convert to NumPy array if needed
-    GenVVars = {f"GenV{key}": ak.to_numpy(vs_flat[var]) for (var, key) in skim_vars.items()}
     GenVVars["GenVis_bb"] = ak.to_numpy(is_bb)
     
     matched_to_v = fatjets.metric_table(vs) < 0.8
