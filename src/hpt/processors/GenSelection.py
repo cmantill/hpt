@@ -209,6 +209,10 @@ def gen_selection_V(
     vs_flat["is_cs"] = (abs(vs_children[0].pdgId) == c_PDGID) & (abs(vs_children[1].pdgId) == s_PDGID)
 
     GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
+    GenVVars["GenVChildren"] = abs(vs_children.pdgId[:, :, 0]).to_numpy()
+    GenVVars["GenVis_bb"] = vs_flat["is_bb"].to_numpy()
+    GenVVars["GenVis_cc"] = vs_flat["is_cc"].to_numpy()
+    GenVVars["GenVis_cs"] = vs_flat["is_cs"].to_numpy()
     
     matched_to_v = fatjets.metric_table(vs) < 0.8
     is_fatjet_matched = ak.any(matched_to_v, axis=2)
