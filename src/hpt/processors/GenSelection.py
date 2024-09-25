@@ -203,15 +203,17 @@ def gen_selection_V(
     print(ak.firsts(vs))
     vs_flat = ak.firsts(vs)
 
-    vs_children = vs_flat.children
+    vs_children = vs.children
     vs_pdgId = abs(vs_children.pdgId).to_numpy()
+    p1 = ak.firsts(vs_children[:, 0:1])
+    p2 = ak.firsts(vs_children[:, 1:2])
 
     GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
     GenVVars["GenVChildren"] = vs_pdgId
 
-    vs_flat["is_bb"] = (vs_pdgId[0] == b_PDGID) & (vs_pdgId[1] == b_PDGID)
-    vs_flat["is_cc"] = (vs_pdgId[0] == c_PDGID) & (vs_pdgId[1] == c_PDGID)
-    vs_flat["is_cs"] = (vs_pdgId[0] == c_PDGID) & (vs_pdgId[1] == s_PDGID)
+    vs_flat["is_bb"] = ((p1 == b_PDGID) & (p2 == b_PDGID) ) 
+    vs_flat["is_cc"] = ((p1 == c_PDGID) & (p2 == c_PDGID))
+    vs_flat["is_cs"] = ((p1 == c_PDGID) & (p2 == s_PDGID)) | ((p1 == s_PDGID) & (p2 == c_PDGID))
 
     GenVVars["GenVis_bb"] = vs_flat["is_bb"].to_numpy()
     GenVVars["GenVis_cc"] = vs_flat["is_cc"].to_numpy()
