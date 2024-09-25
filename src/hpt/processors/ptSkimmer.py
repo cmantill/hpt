@@ -46,7 +46,6 @@ class ptSkimmer(SkimmerABC):
     skim_vars = {  # noqa: RUF012
         "FatJet": {
             **P4,
-            "msoftdrop": "Msd",
             "Txbb": "PNetTXbb",
             "Txjj": "PNetTXjj",
             "Tqcd": "PNetQCD",
@@ -59,9 +58,6 @@ class ptSkimmer(SkimmerABC):
             "t32": "Tau3OverTau2",
             "rawFactor": "rawFactor",
             "msoftdrop": "msoftdrop",
-            "is_bb": "is_bb",
-            "is_cc": "is_cc",
-            "is_cs": "is_cs",
         },
     }
 
