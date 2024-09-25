@@ -203,10 +203,9 @@ def gen_selection_V(
     print(ak.firsts(vs))
     vs_flat = ak.firsts(vs)
 
-    vs_children = vs.children
-    vs_pdgId = abs(vs_children.pdgId).to_numpy()
-    p1 = ak.firsts(vs_children[0])
-    p2 = ak.firsts(vs_children[1])
+    vs_pdgId = abs(vs.children.pdgId).to_numpy()
+    p1 = vs_pdgId[0]
+    p2 = vs_pdgId[1]
 
     GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
     GenVVars["GenVChildren"] = vs_pdgId
