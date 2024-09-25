@@ -204,6 +204,7 @@ def gen_selection_V(
     vs_flat = ak.firsts(vs)
 
     vs_children = vs.children
+    GenVVars["GenVChildren"] = abs(ak.firsts(vs_children.pdgId)).to_numpy()
     vs_flat["is_bb"] = (abs(vs_children.pdgId) == b_PDGID)
     vs_flat["is_cc"] = (abs(vs_children.pdgId) == c_PDGID) 
     vs_flat["is_c"] = (abs(vs_children.pdgId[0]) == c_PDGID)
