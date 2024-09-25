@@ -59,6 +59,9 @@ class ptSkimmer(SkimmerABC):
             "t32": "Tau3OverTau2",
             "rawFactor": "rawFactor",
             "msoftdrop": "msoftdrop",
+            "is_bb": "is_bb",
+            "is_cc": "is_cc",
+            "is_cs": "is_cs",
         },
     }
 

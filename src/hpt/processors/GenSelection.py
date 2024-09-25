@@ -192,11 +192,21 @@ def gen_selection_V(
         ((abs(events.GenPart.pdgId) == W_PDGID) | (abs(events.GenPart.pdgId) == Z_PDGID))
         * events.GenPart.hasFlags(GEN_FLAGS)
     ]
+    #events.GenPart.fields()  # Print fields of GenPart
+    # vs should have something like higgs_children = vs.children
+    # the .children will still be a genpart object
+    # children.pdgId will be the pdgId of the children
+
     print("vs: ", vs)
     print("vs type:", type(vs))  # Print type of `vs`
     print(type(vs[0, :]))        # Print type of the element of vs
     print(ak.firsts(vs))
     vs_flat = ak.firsts(vs)
+
+    vs_children = vs.children
+    vs_flat["is_bb"] = (abs(vs_children[0].pdgId) == b_PDGID) & (abs(vs_children[1].pdgId) == b_PDGID)
+    vs_flat["is_cc"] = (abs(vs_children[0].pdgId) == c_PDGID) & (abs(vs_children[1].pdgId) == c_PDGID)
+    vs_flat["is_cs"] = (abs(vs_children[0].pdgId) == c_PDGID) & (abs(vs_children[1].pdgId) == s_PDGID)
 
     GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
     
