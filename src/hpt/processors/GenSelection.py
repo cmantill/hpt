@@ -203,20 +203,19 @@ def gen_selection_V(
     print(ak.firsts(vs))
     vs_flat = ak.firsts(vs)
 
-    vs_pdgId = abs(vs.children.pdgId).to_numpy()
-    p1 = vs_pdgId[0]
-    p2 = vs_pdgId[1]
+    vs_children = vs.children
+    vs_pdgId = abs(vs_children.pdgId).to_numpy()
 
-    GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
-    GenVVars["GenVChildren"] = vs_pdgId
+    # Get b-quark children (pdgId == 5)
+    b_quark_mask = abs(vs_children.pdgId) == b_PDGID
+    b_quark_count = ak.sum(b_quark_mask, axis=1)
 
-    vs_flat["is_bb"] = (p1 == b_PDGID) #& (p2 == b_PDGID) ) 
-    vs_flat["is_cc"] = ((p1 == c_PDGID) & (p2 == c_PDGID))
-    vs_flat["is_cs"] = ((p1 == c_PDGID) & (p2 == s_PDGID)) | ((p1 == s_PDGID) & (p2 == c_PDGID))
+    # Set is_bb flag to True if exactly 2 b-quarks are present
+    is_bb = (b_quark_count == 2)
 
-    GenVVars["GenVis_bb"] = vs_flat["is_bb"].to_numpy()
-    GenVVars["GenVis_cc"] = vs_flat["is_cc"].to_numpy()
-    GenVVars["GenVis_cs"] = vs_flat["is_cs"].to_numpy()
+    # Convert to NumPy array if needed
+    GenVVars = {f"GenV{key}": ak.to_numpy(vs_flat[var]) for (var, key) in skim_vars.items()}
+    GenVVars["GenVis_bb"] = ak.to_numpy(is_bb)
     
     matched_to_v = fatjets.metric_table(vs) < 0.8
     is_fatjet_matched = ak.any(matched_to_v, axis=2)
