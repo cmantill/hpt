@@ -204,9 +204,9 @@ def gen_selection_V(
     vs_flat = ak.firsts(vs)
 
     vs_children = vs.children
-    vs_flat["is_bb"] = (abs(vs_children.pdgId[:, 0:1]) == b_PDGID) & (abs(vs_children.pdgId[:, 1:2]) == b_PDGID)
-    vs_flat["is_cc"] = (abs(vs_children.pdgId[:, 0:1]) == c_PDGID) & (abs(vs_children[:, 1:2].pdgId) == c_PDGID)
-    vs_flat["is_cs"] = (abs(vs_children.pdgId[:, 0:1]) == c_PDGID) & (abs(vs_children[:, 1:2].pdgId) == s_PDGID)
+    vs_flat["is_bb"] = (abs(vs_children.pdgId) == b_PDGID)
+    vs_flat["is_cc"] = (abs(vs_children.pdgId) == c_PDGID) 
+    #vs_flat["is_cs"] = (abs(vs_children.pdgId[:, 0:1]) == c_PDGID) & (abs(vs_children[:, 1:2].pdgId) == s_PDGID)
 
     GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
     GenVVars["GenVChildren"] = abs(vs_children.pdgId[:, :, 0]).to_numpy()
