@@ -29,6 +29,8 @@ from ..utils import P4, add_selection, pad_val
 gen_selection_dict = {
     "Zto2Q": gen_selection_V,
     "Zto2Nu": gen_selection_V,
+    "Wto2Q": gen_selection_V,
+    "WtoLNu": gen_selection_V,
     "HHto4B": gen_selection_HHbbbb,
     "Hto2B": gen_selection_Hbb,
 }
