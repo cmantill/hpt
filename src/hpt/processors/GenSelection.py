@@ -210,14 +210,13 @@ def gen_selection_V(
     GenVVars["GenVChildren"] = vs_pdgId
 
 
-    # Get b-quark children (pdgId == 5)
-    b_quark_mask = abs(vs_children.pdgId) == b_PDGID
-    b_quark_count = ak.sum(b_quark_mask, axis=1)
+    vs_flat["is_bb"] = ak.all( abs(vs_children.pdgId) == b_PDGID , axis=1)
+    vs_flat["is_cc"] = ak.all(abs(vs_children.pdgId) == c_PDGID , axis=1) 
+    vs_flat["is_cs"] = (abs(GenVVars["GenVChildren"][0]) == c_PDGID) & (abs(GenVVars["GenVChildren"][1]) == s_PDGID)
 
-    # Set is_bb flag to True if exactly 2 b-quarks are present
-    is_bb = (b_quark_count == 2)
-
-    GenVVars["GenVis_bb"] = ak.to_numpy(is_bb)
+    GenVVars["GenVis_bb"] = vs_flat["is_bb"].to_numpy()
+    GenVVars["GenVis_cc"] = vs_flat["is_cc"].to_numpy()
+    GenVVars["GenVis_cs"] = vs_flat["is_cs"].to_numpy()
     
     matched_to_v = fatjets.metric_table(vs) < 0.8
     is_fatjet_matched = ak.any(matched_to_v, axis=2)
