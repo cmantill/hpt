@@ -210,7 +210,8 @@ def gen_selection_V(
     GenVVars["GenVChildren"] = vs_pdgId
 
 
-    GenVVars["GenVis_bb"] = ak.all( vs_pdgId == b_PDGID , axis=1).to_numpy()
+    #GenVVars["GenVis_bb"] = ak.all( vs_pdgId == b_PDGID , axis=1).to_numpy()
+    GenVVars["GenVis_bb"] = ((vs_pdgId[0] == b_PDGID) & (vs_pdgId[1] == b_PDGID)).to_numpy()
     #vs_flat["is_cc"] = ak.all( vs_pdgId == c_PDGID , axis=1) 
     vs_flat["is_cs"] = (vs_pdgId[0] == c_PDGID) & (vs_pdgId[1] == s_PDGID)
 
