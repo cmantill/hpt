@@ -206,18 +206,18 @@ def gen_selection_V(
     vs_children = vs.children
     vs_pdgId = abs(vs_children.pdgId)
     print("vs_pdgId: ", vs_pdgId)
-    print(vs_pdgId[:,0])
+    print(vs_pdgId[:,:,0])
 
     GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
     GenVVars["GenVChildren"] = vs_pdgId.to_numpy()
 
 
     #GenVVars["GenVis_bb"] = ak.all( vs_pdgId == b_PDGID , axis=1).to_numpy()
-    vs_flat["is_bb"] = ((vs_pdgId[0] == b_PDGID) & (vs_pdgId[1] == b_PDGID))
+    #vs_flat["is_bb"] = ((vs_pdgId[:,:,0] == b_PDGID) & (vs_pdgId[1] == b_PDGID))
     #vs_flat["is_cc"] = ak.all( vs_pdgId == c_PDGID , axis=1) 
     vs_flat["is_cs"] = (vs_pdgId[0] == c_PDGID) & (vs_pdgId[1] == s_PDGID)
 
-    GenVVars["GenVis_bb"] = is_bb
+    #GenVVars["GenVis_bb"] = is_bb
     #GenVVars["GenVis_cc"] = vs_flat["is_cc"].to_numpy()
     GenVVars["GenVis_cs"] = vs_flat["is_cs"].to_numpy()
     
