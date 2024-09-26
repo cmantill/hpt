@@ -208,7 +208,7 @@ def gen_selection_V(
     print("vs_pdgId: ", vs_pdgId)
 
     GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
-    GenVVars["GenVChildren"] = vs_pdgId.to_numpy()
+    GenVVars["GenVChildren"] = vs_pdgId#.to_numpy()
     print("GenVVars: ", GenVVars["GenVChildren"])
 
     vs_flat["is_bb"] = ((vs_pdgId[:,:,0] == b_PDGID) & (vs_pdgId[:,:,1] == b_PDGID))
