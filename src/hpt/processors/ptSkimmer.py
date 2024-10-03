@@ -51,8 +51,8 @@ class ptSkimmer(SkimmerABC):
             "Txbb": "PNetTXbb",
             "Txjj": "PNetTXjj",
             "Tqcd": "PNetQCD",
-            "XggVsQCD": "PNetXggVsQCD",       # added
-            "XccVsQCD": "PNetXccVsQCD",       # added
+            "Txgg": "PNetTXgg",       # added
+            "Txcc": "PNetTXcc",       # added
             "PQCDb": "PNetQCD1HF",
             "PQCDbb": "PNetQCD2HF",
             "PQCDothers": "PNetQCD0HF",
