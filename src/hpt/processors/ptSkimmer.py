@@ -60,6 +60,7 @@ class ptSkimmer(SkimmerABC):
             "t32": "Tau3OverTau2",
             "rawFactor": "rawFactor",
             "msoftdrop": "msoftdrop",
+
         },
     }
 
@@ -155,7 +156,14 @@ class ptSkimmer(SkimmerABC):
         print("Starting object definition", f"{time.time() - start:.2f}")
 
         num_fatjets = 2  # number to save
+
+
         fatjets = get_ak8jets(events.FatJet)
+        fatjets["XccVsQCD"] = events.FatJet.particleNet_XccVsQCD
+        fatjets["XggVsQCD"] = events.FatJet.particleNet_XggVsQCD
+        fatjets["WVsQCD"] = events.FatJet.particleNet_WVsQCD
+        fatjets["Txbb"] = fatjets.particleNet_XbbVsQCD
+
         fatjets = good_ak8jets(fatjets, 300, 2.5, 40, 40)
 
         ak4_jets = events.Jet
