@@ -51,6 +51,8 @@ class ptSkimmer(SkimmerABC):
             "Txbb": "PNetTXbb",
             "Txjj": "PNetTXjj",
             "Tqcd": "PNetQCD",
+            "XggVsQCD": "PNetXggVsQCD",       # added
+            "XccVsQCD": "PNetXccVsQCD",       # added
             "PQCDb": "PNetQCD1HF",
             "PQCDbb": "PNetQCD2HF",
             "PQCDothers": "PNetQCD0HF",
@@ -162,10 +164,8 @@ class ptSkimmer(SkimmerABC):
 
 
         fatjets = good_ak8jets(fatjets, 300, 2.5, 40, 40)
-        fatjets["XccVsQCD"] = events.FatJet.particleNet_XccVsQCD
-        fatjets["XggVsQCD"] = events.FatJet.particleNet_XggVsQCD
         #fatjets["WVsQCD"] = events.FatJet.particleNet_WVsQCD
-        fatjets["Txbb"] = fatjets.particleNet_XbbVsQCD
+        #fatjets["Txbb"] = fatjets.particleNet_XbbVsQCD
         
 
         ak4_jets = events.Jet

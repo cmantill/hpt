@@ -181,6 +181,9 @@ def get_ak8jets(fatjets: FatJetArray):
         fatjets["Txbb"] = fatjets.particleNet_XbbVsQCD
         fatjets["Txjj"] = fatjets.particleNet_XqqVsQCD
         fatjets["Tqcd"] = fatjets.particleNet_QCD
+        # adding Xcc and Xgg
+        fatjets["XccVsQCD"] = fatjets.particleNet_XccVsQCD
+        fatjets["XggVsQCD"] = fatjets.particleNet_XggVsQCD
 
     if "particleNet_mass" not in fatjets_fields:
         fatjets["particleNet_mass"] = fatjets.mass
