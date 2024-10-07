@@ -197,19 +197,19 @@ def gen_selection_V(
     # the .children will still be a genpart object
     # children.pdgId will be the pdgId of the children
 
-    print("vs: ", vs)
-    print("vs type:", type(vs))  # Print type of `vs`
-    print(type(vs[0, :]))        # Print type of the element of vs
-    print(ak.firsts(vs))
+    #print("vs: ", vs)
+    #print("vs type:", type(vs))  # Print type of `vs`
+    #print(type(vs[0, :]))        # Print type of the element of vs
+    #print(ak.firsts(vs))
     vs_flat = ak.firsts(vs)
 
     vs_children = vs.children
     vs_pdgId = abs(vs_children.pdgId)
-    print("vs_pdgId: ", vs_pdgId)
+    #print("vs_pdgId: ", vs_pdgId)
 
     GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
     GenVVars["GenVChildren"] = vs_pdgId.to_numpy()
-    print("GenVVars: ", GenVVars["GenVChildren"])
+    #print("GenVVars: ", GenVVars["GenVChildren"])
 
     vs_flat["is_bb"] = ((vs_pdgId[:,:,0] == b_PDGID) & (vs_pdgId[:,:,1] == b_PDGID))
     vs_flat["is_cc"] = ((vs_pdgId[:,:,0] == c_PDGID) & (vs_pdgId[:,:,1] == c_PDGID)) 
