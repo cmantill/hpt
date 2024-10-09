@@ -169,7 +169,6 @@ class ptSkimmer(SkimmerABC):
         #fatjets["WVsQCD"] = events.FatJet.particleNet_WVsQCD
         #fatjets["Txbb"] = fatjets.particleNet_XbbVsQCD
         
-        
 
         ak4_jets = events.Jet
 
