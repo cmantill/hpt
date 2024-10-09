@@ -168,6 +168,10 @@ class ptSkimmer(SkimmerABC):
         fatjets = good_ak8jets(fatjets, 300, 2.5, 40, 40)
         #fatjets["WVsQCD"] = events.FatJet.particleNet_WVsQCD
         #fatjets["Txbb"] = fatjets.particleNet_XbbVsQCD
+        if "particleNetLegacy_Xbb" in events.FatJet.fields:
+            fatjets["TXqq_legacy"] = events.FatJet.particleNetLegacy_Xqq / (
+                fatjets.particleNetLegacy_Xqq + fatjets.particleNetLegacy_QCD
+         )
         
 
         ak4_jets = events.Jet
