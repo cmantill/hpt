@@ -162,6 +162,7 @@ def parse_common_args(parser):
         required=True,
         choices=[
             "v12",
+            "v12v2",
         ],
         help="NanoAOD version",
     )
