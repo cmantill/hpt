@@ -299,6 +299,30 @@ def get_v12():
     }
 
 
+def get_v12v2_private():
+    return {
+        "2023": {
+            "VJets": {
+                "Wto2Q-2Jets_PTQQ-100to200_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-100to200_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-100to200_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-100to200_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-200to400_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-200to400_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-200to400_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-200to400_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-400to600_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-400to600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-400to600_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-400to600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-600_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-600_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-100to200_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-100to200_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-100to200_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-100to200_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-200to400_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-200to400_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-200to400_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-200to400_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-400to600_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-400to600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-400to600_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-400to600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-600_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-600_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+            },
+        },
+    }
+
 def eos_rec_search(startdir, suffix, dirs):
     print(f"EOS Recursive search in {startdir}.")
     eosbase = "root://cmseos.fnal.gov/"
@@ -400,7 +424,8 @@ def get_files(dataset, version):
         return files_valid
 
 
-for version in ["v12"]:
+#for version in ["v12"]:
+for version in ["v12v2_private"]:
     datasets = globals()[f"get_{version}"]()
     index = datasets.copy()
     for year, ydict in datasets.items():
@@ -415,6 +440,8 @@ for version in ["v12"]:
                     index[year][sample][sname] = files
                 else:
                     index[year][sample][sname] = get_files(dataset, version)
+
+
 
     with Path(f"nanoindex_{version}.json").open("w") as f:
         json.dump(index, f, indent=4)

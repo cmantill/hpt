@@ -53,6 +53,7 @@ class ptSkimmer(SkimmerABC):
             "Tqcd": "PNetQCD",
             "Txgg": "PNetTXgg",       # added
             "Txcc": "PNetTXcc",       # added
+            "TXqq_legacy": "PNetTXqq", # added
             #"WvsQCD": "PNetWVsQCD",
             "PQCDb": "PNetQCD1HF",
             "PQCDbb": "PNetQCD2HF",
