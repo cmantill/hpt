@@ -143,6 +143,18 @@ def get_ak8jets(fatjets: FatJetArray):
     fatjets["t21"] = ak.nan_to_num(fatjets.tau2 / fatjets.tau1, nan=-1.0)
 
     fatjets_fields = fatjets.fields
+    print(fatjets_fields)
+
+    if "globalParT_Xcss" in fatjets_fields:
+        print("Using globalParT_Xcss!!!!!!!!")
+        fatjets["ParTPQCD1HF"] = fatjets.globalParT_QCD1HF
+        fatjets["ParTPQCD2HF"] = fatjets.globalParT_QCD2HF
+        fatjets["ParTPQCD0HF"] = fatjets.globalParT_QCD0HF
+        fatjets["ParTPXbb"] = fatjets.globalParT_Xbb
+        fatjets["ParTPXcc"] = fatjets.globalParT_Xcc
+        fatjets["ParTPXcs"] = fatjets.globalParT_Xcs
+        fatjets["ParTPXgg"] = fatjets.globalParT_Xgg
+        fatjets["ParTPXqq"] = fatjets.globalParT_Xqq
 
     if "particleNetMD_Xbb" in fatjets_fields:
         fatjets["Txbb"] = ak.nan_to_num(
@@ -239,16 +251,6 @@ def get_ak8jets(fatjets: FatJetArray):
     if "particleNetWithMass_TvsQCD" in fatjets_fields:
         fatjets["particleNetWithMass_TvsQCD"] = fatjets.particleNetWithMass_TvsQCD
 
-    if "globalParT_Xcss" in fatjets_fields:
-        print("Using globalParT_Xcss!!!!!!!!")
-        fatjets["ParTPQCD1HF"] = fatjets.globalParT_QCD1HF
-        fatjets["ParTPQCD2HF"] = fatjets.globalParT_QCD2HF
-        fatjets["ParTPQCD0HF"] = fatjets.globalParT_QCD0HF
-        fatjets["ParTPXbb"] = fatjets.globalParT_Xbb
-        fatjets["ParTPXcc"] = fatjets.globalParT_Xcc
-        fatjets["ParTPXcs"] = fatjets.globalParT_Xcs
-        fatjets["ParTPXgg"] = fatjets.globalParT_Xgg
-        fatjets["ParTPXqq"] = fatjets.globalParT_Xqq
 
     fatjets["pt_raw"] = (1 - fatjets.rawFactor) * fatjets.pt
 
