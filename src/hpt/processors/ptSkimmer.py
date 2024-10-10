@@ -64,7 +64,14 @@ class ptSkimmer(SkimmerABC):
             "t32": "Tau3OverTau2",
             "rawFactor": "rawFactor",
             "msoftdrop": "msoftdrop",
-
+            "ParTPQCD1HF": "ParTPQCD1HF",
+            "ParTPQCD2HF": "ParTPQCD2HF",
+            "ParTPQCD0HF": "ParTPQCD0HF",
+            "ParTPXbb": "ParTPXbb",
+            "ParTPXcc": "ParTPXcc",
+            "ParTPXcs": "ParTPXcs",
+            "ParTPXgg": "ParTPXgg",
+            "ParTPXqq": "ParTPXqq",
         },
     }
 
