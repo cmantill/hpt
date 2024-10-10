@@ -216,6 +216,7 @@ def get_ak8jets(fatjets: FatJetArray):
         fatjets["PQCDothers"] = fatjets.particleNetMD_QCD
 
     if "particleNetLegacy_Xbb" in fatjets_fields:
+        print("Using particleNetLegacy_Xbb!!!!!!!!")
         fatjets["TXbb_legacy"] = fatjets.particleNetLegacy_Xbb / (
             fatjets.particleNetLegacy_Xbb + fatjets.particleNetLegacy_QCD
         )
