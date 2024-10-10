@@ -239,6 +239,7 @@ def get_ak8jets(fatjets: FatJetArray):
         fatjets["particleNetWithMass_TvsQCD"] = fatjets.particleNetWithMass_TvsQCD
 
     if "globalParT_Xcss" in fatjets_fields:
+        print("Using globalParT_Xcss!!!!!!!!")
         fatjets["ParTPQCD1HF"] = fatjets.globalParT_QCD1HF
         fatjets["ParTPQCD2HF"] = fatjets.globalParT_QCD2HF
         fatjets["ParTPQCD0HF"] = fatjets.globalParT_QCD0HF
