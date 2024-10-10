@@ -145,7 +145,7 @@ def get_ak8jets(fatjets: FatJetArray):
     fatjets_fields = fatjets.fields
     print(fatjets_fields)
 
-    if "globalParT_Xcss" in fatjets_fields:
+    if "globalParT_Xcs" in fatjets_fields:
         print("Using globalParT_Xcss!!!!!!!!")
         fatjets["ParTPQCD1HF"] = fatjets.globalParT_QCD1HF
         fatjets["ParTPQCD2HF"] = fatjets.globalParT_QCD2HF
