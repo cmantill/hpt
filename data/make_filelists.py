@@ -299,7 +299,7 @@ def get_v12():
     }
 
 
-def get_v12v2():   ## PRIVATE
+def get_v12v2_private():   ## PRIVATE
     return {
         "2023": {
             "HH": {
@@ -513,7 +513,7 @@ def get_files(dataset, version):
 
 
 #for version in ["v12"]:
-for version in ["v12v2"]:
+for version in ["v12v2_private"]:
     datasets = globals()[f"get_{version}"]()
     index = datasets.copy()
     for year, ydict in datasets.items():
