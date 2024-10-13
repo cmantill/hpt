@@ -513,7 +513,7 @@ def get_files(dataset, version):
 
 
 #for version in ["v12"]:
-for version in ["v12v2_private"]:
+for version in ["v12v2"]:
     datasets = globals()[f"get_{version}"]()
     index = datasets.copy()
     for year, ydict in datasets.items():
