@@ -72,6 +72,7 @@ class ptSkimmer(SkimmerABC):
             "ParTPXcs": "ParTPXcs",
             "ParTPXgg": "ParTPXgg",
             "ParTPXqq": "ParTPXqq",
+            "particleNet_mass_legacy": "Mass_legacy",
         },
     }
 
