@@ -194,6 +194,8 @@ def gen_selection_V(
     ]
     vs_children = vs.children
 
+    vs_flat = ak.firsts(vs)
+    vs_pdgId = abs(vs_children.pdgId)
 
     GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
     GenVVars["GenVChildren"] = vs_pdgId.to_numpy()
@@ -208,8 +210,7 @@ def gen_selection_V(
     #print("vs type:", type(vs))  # Print type of `vs`
     #print(type(vs[0, :]))        # Print type of the element of vs
     #print(ak.firsts(vs))
-    vs_flat = ak.firsts(vs)
-    vs_pdgId = abs(vs_children.pdgId)
+
     #print("vs_pdgId: ", vs_pdgId)
 
     vs_flat["is_bb"] = ((vs_pdgId[:,:,0] == b_PDGID) & (vs_pdgId[:,:,1] == b_PDGID))
