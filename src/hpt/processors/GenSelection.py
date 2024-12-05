@@ -156,7 +156,7 @@ def gen_selection_Hbb(
     # num_b_matched = ak.sum(fatjets.metric_table(bs_unflat) < 0.8, axis=2)
     b_h1 = ak.firsts(higgs_children[is_bb][:, 0:1])
     b_h2 = ak.firsts(higgs_children[is_bb][:, 1:2])
-    matched_to_higgs = fatjets.metric_table(higgs) < 0.8
+    matched_to_higgs = fatjets.metric_table(higgs) < 0.8    # metric_table returns the deltaR between the fatjet and the higgs
     is_fatjet_matched = ak.any(matched_to_higgs, axis=2)
 
     fatjets["HiggsMatch"] = is_fatjet_matched
@@ -192,6 +192,13 @@ def gen_selection_V(
         ((abs(events.GenPart.pdgId) == W_PDGID) | (abs(events.GenPart.pdgId) == Z_PDGID))
         * events.GenPart.hasFlags(GEN_FLAGS)
     ]
+    vs_children = vs.children
+
+
+    GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
+    GenVVars["GenVChildren"] = vs_pdgId.to_numpy()
+
+
     #events.GenPart.fields()  # Print fields of GenPart
     # vs should have something like higgs_children = vs.children
     # the .children will still be a genpart object
@@ -202,14 +209,8 @@ def gen_selection_V(
     #print(type(vs[0, :]))        # Print type of the element of vs
     #print(ak.firsts(vs))
     vs_flat = ak.firsts(vs)
-
-    vs_children = vs.children
     vs_pdgId = abs(vs_children.pdgId)
     #print("vs_pdgId: ", vs_pdgId)
-
-    GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
-    GenVVars["GenVChildren"] = vs_pdgId.to_numpy()
-    #print("GenVVars: ", GenVVars["GenVChildren"])
 
     vs_flat["is_bb"] = ((vs_pdgId[:,:,0] == b_PDGID) & (vs_pdgId[:,:,1] == b_PDGID))
     vs_flat["is_cc"] = ((vs_pdgId[:,:,0] == c_PDGID) & (vs_pdgId[:,:,1] == c_PDGID)) 
@@ -218,17 +219,25 @@ def gen_selection_V(
     GenVVars["GenVis_bb"] = vs_flat["is_bb"].to_numpy()
     GenVVars["GenVis_cc"] = vs_flat["is_cc"].to_numpy()
     GenVVars["GenVis_cs"] = vs_flat["is_cs"].to_numpy()
-    
-    matched_to_v = fatjets.metric_table(vs) < 0.8
-    is_fatjet_matched = ak.any(matched_to_v, axis=2)
+ 
+    #quarks of the first jet: W/Z -> qq
+    q_v1 = vs_children[vs_flat["is_bb"]][:, 0:1]
 
-    fatjets["VMatch"] = is_fatjet_matched
+    matched_to_v = fatjets.metric_table(vs) < 0.8  # metric_table returns the deltaR between the fatjet and the W/Z
+    is_fatjet_matched = ak.any(matched_to_v, axis=2) # checks if any of the fatjets is matched to the W/Z
+
+    #print("GenVVars: ", GenVVars["GenVChildren"])
+
+    fatjets["VMatch"] = is_fatjet_matched # fatjets["VMatch"] is a boolean array that checks if the fatjet is matched to the W/Z
+    fatjets["NumQMatchedV1"] = ak.sum(fatjets.metric_table(q_v1) < 0.8, axis=2) # fatjets["NumQMatchedV1"] is the number of quarks matched to the first jet
+
 
     num_fatjets = 2
     bbFatJetVars = {
         f"bbFatJet{var}": pad_val(fatjets[var], num_fatjets, axis=1)
         for var in [
             "VMatch",
+            "NumQMatchedV1",
         ]
     }
 

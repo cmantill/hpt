@@ -155,8 +155,10 @@ def get_ak8jets(fatjets: FatJetArray):
         fatjets["ParTPXcs"] = fatjets.globalParT_Xcs
         fatjets["ParTPXgg"] = fatjets.globalParT_Xgg
         fatjets["ParTPXqq"] = fatjets.globalParT_Xqq
-        fatjets["ParTmassRes"] = fatjets.globalParT_massRes * fatjets.mass
-        fatjets["ParTmassVis"] = fatjets.globalParT_massVis * fatjets.mass
+        # ParT masses were trained with the masses WITHOUT the jet mass correction, so we have to undo the correction here
+        fatjets["ParTmassRes"] = fatjets.globalParT_massRes * (1 - fatjets.rawFactor) * fatjets.mass
+        fatjets["ParTmassVis"] = fatjets.globalParT_massVis * (1 - fatjets.rawFactor) * fatjets.mass
+
 
     if "particleNetMD_Xbb" in fatjets_fields:
         fatjets["Txbb"] = ak.nan_to_num(
