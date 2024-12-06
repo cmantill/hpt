@@ -223,7 +223,7 @@ def gen_selection_V(
     GenVVars["GenVis_cs"] = vs_flat["is_cs"].to_numpy()
  
     #quarks of the first jet: W/Z -> qq
-    q_v1 = vs_children[:, 0:1]
+    q_v1 = ak.firsts(vs_children[:, 0:1])
 
     matched_to_v = fatjets.metric_table(vs) < 0.8  # metric_table returns the deltaR between the fatjet and the W/Z
     is_fatjet_matched = ak.any(matched_to_v, axis=2) # checks if any of the fatjets is matched to the W/Z
