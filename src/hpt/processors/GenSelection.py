@@ -154,8 +154,9 @@ def gen_selection_Hbb(
     # match fatjets to bb
     # bs_unflat = higgs_children[is_bb]
     # num_b_matched = ak.sum(fatjets.metric_table(bs_unflat) < 0.8, axis=2)
-    b_h1 = ak.firsts(higgs_children[is_bb][:, 0:1])
-    b_h2 = ak.firsts(higgs_children[is_bb][:, 1:2])
+    #[:, n] selects the  n -th element along the second axis (the Higgs boson index)
+    b_h1 = ak.firsts(higgs_children[is_bb][:, 0:1])   # first b quark
+    b_h2 = ak.firsts(higgs_children[is_bb][:, 1:2]) # second b quark
     matched_to_higgs = fatjets.metric_table(higgs) < 0.8    # metric_table returns the deltaR between the fatjet and the higgs
     is_fatjet_matched = ak.any(matched_to_higgs, axis=2)
 
@@ -223,7 +224,11 @@ def gen_selection_V(
     GenVVars["GenVis_cs"] = vs_flat["is_cs"].to_numpy()
  
     #quarks of the first jet: W/Z -> qq
-    q_v1 = ak.firsts(vs_children[:, 0:1])
+    #q_v1 = ak.firsts(vs_children[:, 0:1])
+    q_v1 = vs_children[:, 0]
+    delta_r = fatjets.metric_table(q_v1)
+    matched_mask = delta_r < 0.8
+    fatjets["NumQMatchedV1"] = ak.sum(matched_mask, axis=2)
 
     matched_to_v = fatjets.metric_table(vs) < 0.8  # metric_table returns the deltaR between the fatjet and the W/Z
     is_fatjet_matched = ak.any(matched_to_v, axis=2) # checks if any of the fatjets is matched to the W/Z
@@ -231,7 +236,7 @@ def gen_selection_V(
     #print("GenVVars: ", GenVVars["GenVChildren"])
 
     fatjets["VMatch"] = is_fatjet_matched # fatjets["VMatch"] is a boolean array that checks if the fatjet is matched to the W/Z
-    fatjets["NumQMatchedV1"] = ak.sum(fatjets.metric_table(q_v1) < 0.8, axis=2) # fatjets["NumQMatchedV1"] is the number of quarks matched to the first jet
+    #fatjets["NumQMatchedV1"] = ak.sum(fatjets.metric_table(q_v1) < 0.8, axis=2) # fatjets["NumQMatchedV1"] is the number of quarks matched to the first jet
 
 
     num_fatjets = 2
