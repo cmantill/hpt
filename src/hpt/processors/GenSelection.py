@@ -166,6 +166,8 @@ def gen_selection_Hbb(
     fatjets["NumBMatchedH1"] = ak.sum(fatjets.metric_table(b_h1) < 0.8, axis=2)
     fatjets["NumBMatchedH2"] = ak.sum(fatjets.metric_table(b_h2) < 0.8, axis=2)
 
+    print(ak.num(fatjets[var], axis=1))
+
     num_fatjets = 2
     bbFatJetVars = {
         f"bbFatJet{var}": pad_val(fatjets[var], num_fatjets, axis=1)
@@ -192,10 +194,9 @@ def gen_selection_V(
         ((abs(events.GenPart.pdgId) == W_PDGID) | (abs(events.GenPart.pdgId) == Z_PDGID))
         * events.GenPart.hasFlags(GEN_FLAGS)
     ]
+    vs_flat = ak.firsts(vs)
     vs_children = vs.children
     vs_pdgId = abs(vs_children.pdgId)
-
-    vs_flat = ak.firsts(vs)
 
     GenVVars = {f"GenV{key}": vs_flat[var].to_numpy() for (var, key) in skim_vars.items()}
     GenVVars["GenVChildren"] = vs_pdgId.to_numpy()
@@ -222,7 +223,7 @@ def gen_selection_V(
     GenVVars["GenVis_cs"] = vs_flat["is_cs"].to_numpy()
  
     #quarks of the first jet: W/Z -> qq
-    q_v1 = vs_children[vs_flat["is_bb"]][:, 0:1]
+    q_v1 = vs_children[:, 0:1]
 
     matched_to_v = fatjets.metric_table(vs) < 0.8  # metric_table returns the deltaR between the fatjet and the W/Z
     is_fatjet_matched = ak.any(matched_to_v, axis=2) # checks if any of the fatjets is matched to the W/Z
