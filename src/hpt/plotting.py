@@ -1185,6 +1185,7 @@ def mesh2d(
 
 def multiROCCurveGrey(
     rocs: dict,
+    discriminator: list[str],
     sig_effs: list[float] = None,
     bkg_effs: list[float] = None,
     xlim=None,
@@ -1235,7 +1236,7 @@ def multiROCCurveGrey(
             if bkg_effs is not None:
                 for bkg_eff in bkg_effs:
                     x = roc["tpr"][np.searchsorted(roc["fpr"], bkg_eff)]
-                    plt.vlines(x=x, ymin=0, ymax=bkg_eff, **line_style)
+                    plt.vlines(x=x, ymin=0, ymax=bkg_eff, **line_style, label=f"{bkg_eff:.2f}, {discriminator} > {x:.2f}")
                     plt.hlines(y=bkg_eff, xmin=0, xmax=x, **line_style)
 
     # plots points and lines on plot corresponding to classifier thresholds
@@ -1275,6 +1276,8 @@ def multiROCCurveGrey(
                         alpha=0.5,
                     )
                     i_th += 1
+
+
 
             if find_from_sigeff is not None and rockey in find_from_sigeff:
                 pths = {sig_eff: [[], []] for sig_eff in find_from_sigeff[rockey]}
@@ -1323,9 +1326,9 @@ def multiROCCurveGrey(
     ax.xaxis.grid(True, which="major")
     ax.yaxis.grid(True, which="major")
     if legtitle:
-        plt.legend(title=legtitle, loc="center left", bbox_to_anchor=(1, 0.5))
+        plt.legend(title=legtitle, loc="center left", bbox_to_anchor=(0.2, 0.85), fontsize="small")
     else:
-        plt.legend(loc="center left", bbox_to_anchor=(1, 0.5))
+        plt.legend(loc="center left", bbox_to_anchor=(1.5, 0.5), fontsize="small")
 
     if len(name):
         plt.savefig(plot_dir / f"{name}.png", bbox_inches="tight")
