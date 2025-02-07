@@ -17,6 +17,9 @@ from hpt import common_vars
 from .GenSelection import gen_selection_V, gen_selection_HHbbbb, gen_selection_Hbb
 from .objects import (
     get_ak8jets,
+    good_ak8jets,
+    veto_muons,
+    veto_electrons,
 )
 from .SkimmerABC import SkimmerABC
 from ..utils import P4, add_selection, pad_val
@@ -26,6 +29,8 @@ from ..utils import P4, add_selection, pad_val
 gen_selection_dict = {
     "Zto2Q": gen_selection_V,
     "Zto2Nu": gen_selection_V,
+    "Wto2Q": gen_selection_V,
+    "WtoLNu": gen_selection_V,
     "HHto4B": gen_selection_HHbbbb,
     "Hto2B": gen_selection_Hbb,
 }
@@ -43,10 +48,13 @@ class ptSkimmer(SkimmerABC):
     skim_vars = {  # noqa: RUF012
         "FatJet": {
             **P4,
-            "msoftdrop": "Msd",
             "Txbb": "PNetTXbb",
             "Txjj": "PNetTXjj",
             "Tqcd": "PNetQCD",
+            "Txgg": "PNetTXgg",       # added
+            "Txcc": "PNetTXcc",       # added
+            "TXqq_legacy": "PNetTXqq", # added
+            #"WvsQCD": "PNetWVsQCD",
             "PQCDb": "PNetQCD1HF",
             "PQCDbb": "PNetQCD2HF",
             "PQCDothers": "PNetQCD0HF",
@@ -56,7 +64,17 @@ class ptSkimmer(SkimmerABC):
             "t32": "Tau3OverTau2",
             "rawFactor": "rawFactor",
             "msoftdrop": "msoftdrop",
-            "particleNet_mass": "particleNet_mass",
+            "ParTPQCD1HF": "ParTPQCD1HF",
+            "ParTPQCD2HF": "ParTPQCD2HF",
+            "ParTPQCD0HF": "ParTPQCD0HF",
+            "ParTPXbb": "ParTPXbb",
+            "ParTPXcc": "ParTPXcc",
+            "ParTPXcs": "ParTPXcs",
+            "ParTPXgg": "ParTPXgg",
+            "ParTPXqq": "ParTPXqq",
+            "particleNet_mass_legacy": "Mass_legacy",
+            "ParTmassRes": "ParTmassRes",
+            "ParTmassVis": "ParTmassVis",
         },
     }
 
@@ -68,6 +86,44 @@ class ptSkimmer(SkimmerABC):
 
         self.XSECS = xsecs if xsecs is not None else {}  # in pb
 
+        self.HLTs = {
+            "2023": [
+                # Add triggers here for the year 2023
+                
+                # offline triggers
+                "QuadPFJet70_50_40_35_PFBTagParticleNet_2BTagSum0p65",
+                "PFHT1050",
+                "AK8PFJet230_SoftDropMass40_PFAK8ParticleNetBB0p35",
+                "AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35",
+                "AK8PFJet275_SoftDropMass40_PFAK8ParticleNetBB0p35",
+                "AK8PFJet230_SoftDropMass40",
+                "AK8PFJet425_SoftDropMass40",
+                "AK8PFJet400_SoftDropMass40",
+                "AK8DiPFJet250_250_MassSD50",
+                "AK8DiPFJet260_260_MassSD30",
+                "AK8PFJet420_MassSD30",
+                "AK8PFJet230_SoftDropMass40_PNetBB0p06",
+                "AK8PFJet230_SoftDropMass40_PNetBB0p10",
+                "AK8PFJet250_SoftDropMass40_PNetBB0p06",
+                # parking triggers
+                # HHparking
+                #"PFHT280_QuadPFJet30_PNet2BTagMean0p55",
+                # VBFparking
+                # https://its.cern.ch/jira/browse/CMSHLT-3058
+                #"DiJet110_35_Mjj650_PFMET110",
+                #"TripleJet110_35_35_Mjj650_PFMET110",
+                #"VBF_DiPFJet80_45_Mjj650_PFMETNoMu85",
+                #"VBF_DiPFJet110_35_Mjj650",
+                #"VBF_DiPFJet110_35_Mjj650_TriplePFJet",
+                #"VBF_DiPFJet110_40_Mjj1000_Detajj3p5",
+                #"VBF_DiPFJet110_40_Mjj1000_Detajj3p5_TriplePFJet",
+                #"VBF_DiJet_60_30_Mass500_DiJet50",
+                #"VBF_DiJet_110_35_Mass620",
+                # SingleMuonparking
+                #"Mu12_IP6",
+            ],
+        }
+
         # https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Run_3_recommendations
         self.met_filters = [
             "goodVertices",
@@ -78,6 +134,8 @@ class ptSkimmer(SkimmerABC):
             "eeBadScFilter",
             "hfNoisyHitsFilt",
         ]
+
+
 
         self._accumulator = processor.dict_accumulator({})
 
@@ -112,9 +170,20 @@ class ptSkimmer(SkimmerABC):
         print("Starting object definition", f"{time.time() - start:.2f}")
 
         num_fatjets = 2  # number to save
+
+
         fatjets = get_ak8jets(events.FatJet)
 
+
+        fatjets = good_ak8jets(fatjets, 300, 2.5, 40, 40)
+        #fatjets["WVsQCD"] = events.FatJet.particleNet_WVsQCD
+        #fatjets["Txbb"] = fatjets.particleNet_XbbVsQCD
+        
+
         ak4_jets = events.Jet
+
+        veto_muon_sel = veto_muons(events.Muon)
+        veto_electron_sel = veto_electrons(events.Electron)
         
         print("Object definition", f"{time.time() - start:.2f}")
 
@@ -131,8 +200,8 @@ class ptSkimmer(SkimmerABC):
 
 
         # Add LHE_HT and LHE_Vpt to genVars
-        genVars["LHE_HT"] = events.LHE.HT.to_numpy()
-        genVars["LHE_Vpt"] = events.LHE.Vpt.to_numpy()
+        #genVars["LHE_HT"] = events.LHE.HT.to_numpy()
+        #genVars["LHE_Vpt"] = events.LHE.Vpt.to_numpy()
 
         # used for normalization to cross section below
         gen_selected = (
@@ -169,20 +238,20 @@ class ptSkimmer(SkimmerABC):
             "AK8PFJet250_SoftDropMass40_PNetBB0p06",
             # parking triggers
             # HHparking
-            "PFHT280_QuadPFJet30_PNet2BTagMean0p55",
+            #"PFHT280_QuadPFJet30_PNet2BTagMean0p55",
             # VBFparking
             # https://its.cern.ch/jira/browse/CMSHLT-3058
-            "DiJet110_35_Mjj650_PFMET110",
-            "TripleJet110_35_35_Mjj650_PFMET110",
-            "VBF_DiPFJet80_45_Mjj650_PFMETNoMu85",
-            "VBF_DiPFJet110_35_Mjj650",
-            "VBF_DiPFJet110_35_Mjj650_TriplePFJet",
-            "VBF_DiPFJet110_40_Mjj1000_Detajj3p5",
-            "VBF_DiPFJet110_40_Mjj1000_Detajj3p5_TriplePFJet",
-            "VBF_DiJet_60_30_Mass500_DiJet50",
-            "VBF_DiJet_110_35_Mass620",
+            #"DiJet110_35_Mjj650_PFMET110",
+            #"TripleJet110_35_35_Mjj650_PFMET110",
+            #"VBF_DiPFJet80_45_Mjj650_PFMETNoMu85",
+            #"VBF_DiPFJet110_35_Mjj650",
+            #"VBF_DiPFJet110_35_Mjj650_TriplePFJet",
+            #"VBF_DiPFJet110_40_Mjj1000_Detajj3p5",
+            #"VBF_DiPFJet110_40_Mjj1000_Detajj3p5_TriplePFJet",
+            #"VBF_DiJet_60_30_Mass500_DiJet50",
+            #"VBF_DiJet_110_35_Mass620",
             # SingleMuonparking
-            "Mu12_IP6",
+            #"Mu12_IP6",
         ]
         zeros = np.zeros(len(events), dtype="bool")
         HLTVars = {
@@ -207,6 +276,33 @@ class ptSkimmer(SkimmerABC):
         #########################
 
         print("Selection", f"{time.time() - start:.2f}")
+
+        # OR-ing HLT triggers
+        for trigger in self.HLTs[year]:
+            if trigger not in events.HLT.fields:
+                logger.warning(f"Missing HLT {trigger}!")
+
+        HLT_triggered = np.any(
+            np.array(
+                [events.HLT[trigger] for trigger in self.HLTs[year] if trigger in events.HLT.fields]
+            ),
+            axis=0,
+        )
+
+
+        #in HH4b code there is an if region == signal here
+
+        # >=2 AK8 jets passing selections
+        add_selection("ak8_numjets", (ak.num(fatjets) >= 1), *selection_args)
+
+        #add_selection("ak8bb_txbb0", cut_txbb, *selection_args)
+
+        # 0 veto leptons
+        add_selection(
+            "0lep",
+            (ak.sum(veto_muon_sel, axis=1) == 0) & (ak.sum(veto_electron_sel, axis=1) == 0),
+            *selection_args,
+        )
 
         ######################
         # Weights

@@ -143,6 +143,22 @@ def get_ak8jets(fatjets: FatJetArray):
     fatjets["t21"] = ak.nan_to_num(fatjets.tau2 / fatjets.tau1, nan=-1.0)
 
     fatjets_fields = fatjets.fields
+    print(fatjets_fields)
+
+    if "globalParT_Xcs" in fatjets_fields:
+        print("Using globalParT_Xcs!!!!!!!!")
+        fatjets["ParTPQCD1HF"] = fatjets.globalParT_QCD1HF
+        fatjets["ParTPQCD2HF"] = fatjets.globalParT_QCD2HF
+        fatjets["ParTPQCD0HF"] = fatjets.globalParT_QCD0HF
+        fatjets["ParTPXbb"] = fatjets.globalParT_Xbb
+        fatjets["ParTPXcc"] = fatjets.globalParT_Xcc
+        fatjets["ParTPXcs"] = fatjets.globalParT_Xcs
+        fatjets["ParTPXgg"] = fatjets.globalParT_Xgg
+        fatjets["ParTPXqq"] = fatjets.globalParT_Xqq
+        # ParT masses were trained with the masses WITHOUT the jet mass correction, so we have to undo the correction here
+        fatjets["ParTmassRes"] = fatjets.globalParT_massRes * (1 - fatjets.rawFactor) * fatjets.mass
+        fatjets["ParTmassVis"] = fatjets.globalParT_massVis * (1 - fatjets.rawFactor) * fatjets.mass
+
 
     if "particleNetMD_Xbb" in fatjets_fields:
         fatjets["Txbb"] = ak.nan_to_num(
@@ -181,6 +197,10 @@ def get_ak8jets(fatjets: FatJetArray):
         fatjets["Txbb"] = fatjets.particleNet_XbbVsQCD
         fatjets["Txjj"] = fatjets.particleNet_XqqVsQCD
         fatjets["Tqcd"] = fatjets.particleNet_QCD
+        # adding Xcc and Xgg
+        fatjets["Txcc"] = fatjets.particleNet_XccVsQCD
+        fatjets["Txgg"] = fatjets.particleNet_XggVsQCD
+        #fatjets["WvsQCD"] = fatjets.particleNetWithMass_WvsQCD
 
     if "particleNet_mass" not in fatjets_fields:
         fatjets["particleNet_mass"] = fatjets.mass
@@ -212,6 +232,7 @@ def get_ak8jets(fatjets: FatJetArray):
         fatjets["PQCDothers"] = fatjets.particleNetMD_QCD
 
     if "particleNetLegacy_Xbb" in fatjets_fields:
+        print("Using particleNetLegacy_Xbb!!!!!!!!")
         fatjets["TXbb_legacy"] = fatjets.particleNetLegacy_Xbb / (
             fatjets.particleNetLegacy_Xbb + fatjets.particleNetLegacy_QCD
         )
@@ -234,6 +255,7 @@ def get_ak8jets(fatjets: FatJetArray):
     if "particleNetWithMass_TvsQCD" in fatjets_fields:
         fatjets["particleNetWithMass_TvsQCD"] = fatjets.particleNetWithMass_TvsQCD
 
+
     fatjets["pt_raw"] = (1 - fatjets.rawFactor) * fatjets.pt
 
     return fatjets
@@ -242,8 +264,7 @@ def get_ak8jets(fatjets: FatJetArray):
 # ak8 jet definition
 def good_ak8jets(fatjets: FatJetArray, pt: float, eta: float, msd: float, mreg: float):
     fatjets_fields = fatjets.fields
-    legacy = "particleNetLegacy_mass" in fatjets_fields
-    mreg_val = fatjets["particleNet_mass_legacy"] if legacy else fatjets["particleNet_mass"]
+    mreg_val = fatjets["particleNet_mass"]
 
     fatjet_sel = (
         fatjets.isTight

@@ -205,6 +205,17 @@ def get_v12():
                 "GluGluHto2B_PT-200_M-125": "/GluGluHto2B_PT-200_M-125_TuneCP5_13p6TeV_powheg-minlo-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM",
                 "GluGluHto2B_M-125": "/GluGluHto2B_M-125_TuneCP5_13p6TeV_powheg-minlo-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM",
             },
+            "TT": {
+                "TTto4Q": "/TTto4Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM",
+                "TTto2L2Nu": "/TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM",
+                "TTtoLNu2Q": "/TTtoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM",
+            },
+            "Diboson": {
+                "WW": "/WW_TuneCP5_13p6TeV_pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM",
+                "WWto4Q": "/WWto4Q_TuneCP5_13p6TeV_powheg-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v4/NANOAODSIM",
+                "WZ": "/WZ_TuneCP5_13p6TeV_pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM",
+                "ZZ": "/ZZ_TuneCP5_13p6TeV_pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM",
+            },
             "VJets": {
                 # LO
                 "Wto2Q-3Jets_HT-200to400": "/Wto2Q-3Jets_HT-200to400_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer23NanoAODv12-130X_mcRun3_2023_realistic_v14-v2/NANOAODSIM",
@@ -287,6 +298,118 @@ def get_v12():
         },
     }
 
+
+def get_v12v2_private():   ## PRIVATE
+    return {
+        "2023": {
+            "HH": {
+                "GluGlutoHHto4B_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/GluGlutoHHto4B_kl-1p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/",
+                "GluGlutoHHto4B_kl-2p45_kt-1p00_c2-0p00_TuneCP5_13p6TeV": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/GluGlutoHHto4B_kl-2p45_kt-1p00_c2-0p00_LHEweights_TuneCP5_13p6TeV_powheg-pythia8/",
+                "GluGlutoHHto4B_kl-5p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/GluGlutoHHto4B_kl-5p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/",
+                "GluGlutoHHto4B_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/GluGlutoHHto4B_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/",
+            },
+            "VBFHH": {
+                "VBFHHto4B_CV_1_C2V_0_C3_1_TuneCP5_13p6TeV_madgraph-pythia8": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/VBFHHto4B_CV_1_C2V_0_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/",
+                "VBFHHto4B_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/VBFHHto4B_CV_1_C2V_1_C3_1_TuneCP5_13p6TeV_madgraph-pythia8/",
+                "VBFHHto4B_CV-1p74_C2V-1p37_C3-14p4_TuneCP5_13p6TeV_madgraph-pythia8": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/VBFHHto4B_CV_1p74_C2V_1p37_C3_14p4_TuneCP5_13p6TeV_madgraph-pythia8/",
+                "VBFHHto4B_CV-m0p012_C2V-0p030_C3-10p2_TuneCP5_13p6TeV_madgraph-pythia8": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/VBFHHto4B_CV_m0p012_C2V_0p030_C3_10p2_TuneCP5_13p6TeV_madgraph-pythia8/",
+                "VBFHHto4B_CV-m0p758_C2V-1p44_C3-m19p3_TuneCP5_13p6TeV_madgraph-pythia8": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/VBFHHto4B_CV_m0p758_C2V_1p44_C3_m19p3_TuneCP5_13p6TeV_madgraph-pythia8/",
+                "VBFHHto4B_CV-m0p962_C2V-0p959_C3-m1p43_TuneCP5_13p6TeV_madgraph-pythia8": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/VBFHHto4B_CV_m0p962_C2V_0p959_C3_m1p43_TuneCP5_13p6TeV_madgraph-pythia8/",
+                "VBFHHto4B_CV-m1p60_C2V-2p72_C3-m1p36_TuneCP5_13p6TeV_madgraph-pythia8": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/VBFHHto4B_CV_m1p60_C2V_2p72_C3_m1p36_TuneCP5_13p6TeV_madgraph-pythia8/",
+                "VBFHHto4B_CV-m1p83_C2V-3p57_C3-m3p39_TuneCP5_13p6TeV_madgraph-pythia8": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/VBFHHto4B_CV_m1p83_C2V_3p57_C3_m3p39_TuneCP5_13p6TeV_madgraph-pythia8/",
+                "VBFHHto4B_CV-m1p21_C2V-1p94_C3-m0p94_TuneCP5_13p6TeV_madgraph-pythia8": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/VBFHHto4B_CV_m1p21_C2V_1p94_C3_m0p94_TuneCP5_13p6TeV_madgraph-pythia8/",
+                "VBFHHto4B_CV-m2p12_C2V-3p87_C3-m5p96_TuneCP5_13p6TeV_madgraph-pythia8": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/cmantill/2023/HH4b/VBFHHto4B_CV_m2p12_C2V_3p87_C3_m5p96_TuneCP5_13p6TeV_madgraph-pythia8/",
+            },
+            "Hbb": {
+                "GluGluHto2B_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/GluGluHto2B_M-125_TuneCP5_13p6TeV_powheg-minlo-pythia8/",
+                "GluGluHto2B_PT-200_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/GluGluHto2B_PT-200_M-125_TuneCP5_13p6TeV_powheg-minlo-pythia8/",
+                "VBFHto2B_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/VBFHto2B_M-125_TuneCP5_13p6TeV_powheg-pythia8/",
+                "WminusH_Hto2B_Wto2Q_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/WminusH_Hto2B_Wto2Q_M-125_TuneCP5_13p6TeV_powheg-pythia8/",
+                "WminusH_Hto2B_WtoLNu_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/WminusH_Hto2B_WtoLNu_M-125_TuneCP5_13p6TeV_powheg-pythia8/",
+                "WplusH_Hto2B_Wto2Q_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/WplusH_Hto2B_Wto2Q_M-125_TuneCP5_13p6TeV_powheg-pythia8/",
+                "WplusH_Hto2B_WtoLNu_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/WplusH_Hto2B_WtoLNu_M-125_TuneCP5_13p6TeV_powheg-pythia8/",
+                "ZH_Hto2B_Zto2L_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/ZH_Hto2B_Zto2L_M-125_TuneCP5_13p6TeV_powheg-pythia8/",
+                "ZH_Hto2B_Zto2Q_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/ZH_Hto2B_Zto2Q_M-125_TuneCP5_13p6TeV_powheg-pythia8/",
+                "ZH_Hto2B_Zto2Nu_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/ZH_Hto2B_Zto2Nu_M-125_TuneCP5_13p6TeV_powheg-minlo-pythia8/",
+                "ZH_Hto2C_Zto2Q_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/ZH_Hto2C_Zto2Q_M-125_TuneCP5_13p6TeV_powheg-pythia8/",
+                "ggZH_Hto2B_Zto2L_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/ggZH_Hto2B_Zto2L_M-125_TuneCP5_13p6TeV_powheg-pythia8/",
+                "ggZH_Hto2B_Zto2Q_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/ZH_Hto2B_Zto2Q_M-125_TuneCP5_13p6TeV_powheg-pythia8/",
+                "ggZH_Hto2B_Zto2Nu_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/ggZH_Hto2B_Zto2Nu_M-125_TuneCP5_13p6TeV_powheg-pythia8/",
+                "ggZH_Hto2C_Zto2Q_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/ggZH_Hto2C_Zto2Q_M-125_TuneCP5_13p6TeV_powheg-pythia8/",
+                "ttHto2B_M-125": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/Hbb/ttHto2B_M-125_TuneCP5_13p6TeV_powheg-pythia8/",
+            },
+            "QCD": {
+                "QCD_HT-100to200": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/rkansal/2023/QCD/QCD-4Jets_HT-100to200_TuneCP5_13p6TeV_madgraphMLM-pythia8",
+                "QCD_HT-200to400": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/rkansal/2023/QCD/QCD-4Jets_HT-200to400_TuneCP5_13p6TeV_madgraphMLM-pythia8",
+                "QCD_HT-400to600": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/rkansal/2023/QCD/QCD-4Jets_HT-400to600_TuneCP5_13p6TeV_madgraphMLM-pythia8",
+                "QCD_HT-600to800": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/rkansal/2023/QCD/QCD-4Jets_HT-600to800_TuneCP5_13p6TeV_madgraphMLM-pythia8",
+                "QCD_HT-800to1000": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/rkansal/2023/QCD/QCD-4Jets_HT-800to1000_TuneCP5_13p6TeV_madgraphMLM-pythia8",
+                "QCD_HT-1000to1200": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/rkansal/2023/QCD/QCD-4Jets_HT-1000to1200_TuneCP5_13p6TeV_madgraphMLM-pythia8",
+                "QCD_HT-1200to1500": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/rkansal/2023/QCD/QCD-4Jets_HT-1200to1500_TuneCP5_13p6TeV_madgraphMLM-pythia8",
+                "QCD_HT-1500to2000": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/rkansal/2023/QCD/QCD-4Jets_HT-1500to2000_TuneCP5_13p6TeV_madgraphMLM-pythia8",
+                "QCD_HT-2000": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/rkansal/2023/QCD/QCD-4Jets_HT-2000_TuneCP5_13p6TeV_madgraphMLM-pythia8",
+            },
+            "TT": {
+                "TTto4Q": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/rkansal/2023/TT/TTto4Q_TuneCP5_13p6TeV_powheg-pythia8",
+                "TTto2L2Nu": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/rkansal/2023/TT/TTto2L2Nu_TuneCP5_13p6TeV_powheg-pythia8",
+                "TTtoLNu2Q": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/rkansal/2023/TT/TTtoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8",
+            },
+            "Diboson": {
+                "WW": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/diboson/WW_TuneCP5_13p6TeV_pythia8/",
+                "WZ": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/diboson/WZ_TuneCP5_13p6TeV_pythia8/",
+                "ZZ": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/diboson/ZZ_TuneCP5_13p6TeV_pythia8/",
+            },
+            "VJets": {
+                "WtoLNu-2Jets_0J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/WtoLNu-2Jets_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "WtoLNu-2Jets_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/WtoLNu-2Jets_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "WtoLNu-2Jets_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/WtoLNu-2Jets_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "DYto2L-2Jets_MLL-50_0J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/DYto2L-2Jets_MLL-50_0J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "DYto2L-2Jets_MLL-50_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/DYto2L-2Jets_MLL-50_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "DYto2L-2Jets_MLL-50_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/DYto2L-2Jets_MLL-50_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-100to200_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-100to200_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-100to200_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-100to200_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-200to400_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-200to400_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-200to400_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-200to400_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-400to600_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-400to600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-400to600_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-400to600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-600_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Wto2Q-2Jets_PTQQ-600_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Wto2Q-2Jets_PTQQ-600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-100to200_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-100to200_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-100to200_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-100to200_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-200to400_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-200to400_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-200to400_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-200to400_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-400to600_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-400to600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-400to600_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-400to600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-600_1J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-600_1J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+                "Zto2Q-2Jets_PTQQ-600_2J": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/VJets/Zto2Q-2Jets_PTQQ-600_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/",
+            },
+            "SingleTop": {
+                "TbarBQ_t-channel_4FS": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/SingleTop/TbarBQ_t-channel_4FS_TuneCP5_13p6TeV_powheg-madspin-pythia8/",
+                "TBbarQ_t-channel_4FS": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/SingleTop/TBbarQ_t-channel_4FS_TuneCP5_13p6TeV_powheg-madspin-pythia8/",
+                "TWminustoLNu2Q": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/SingleTop/TWminustoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8/",
+                "TWminusto4Q": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/SingleTop/TWminusto4Q_TuneCP5_13p6TeV_powheg-pythia8/",
+                "TbarWplusto4Q": "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/woodson/2023/SingleTop/TbarWplusto4Q_TuneCP5_13p6TeV_powheg-pythia8/",
+            },
+            "JetMET": {
+                "JetMET_Run2023Cv1": [
+                    "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/sixie/2023/JetMET/JetMET0/JetMET_Run2023C_0v1/",
+                    "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/sixie/2023/JetMET/JetMET1/JetMET_Run2023C_1v1/",
+                ],
+                "JetMET_Run2023Cv2": [
+                    "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/sixie/2023/JetMET/JetMET0/JetMET_Run2023C_0v2/",
+                    "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/sixie/2023/JetMET/JetMET1/JetMET_Run2023C_1v2/",
+                ],
+                "JetMET_Run2023Cv3": [
+                    "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/sixie/2023/JetMET/JetMET0/JetMET_Run2023C_0v3/",
+                    "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/sixie/2023/JetMET/JetMET1/JetMET_Run2023C_1v3/",
+                ],
+                "JetMET_Run2023Cv4": [
+                    "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/sixie/2023/JetMET/JetMET0/JetMET_Run2023C_0v4/",
+                    "/store/user/lpcdihiggsboost/NanoAOD_v12_ParT/sixie/2023/JetMET/JetMET1/JetMET_Run2023C_1v4/",
+                ],
+            },
+        },
+    }
 
 def eos_rec_search(startdir, suffix, dirs):
     print(f"EOS Recursive search in {startdir}.")
@@ -389,7 +512,8 @@ def get_files(dataset, version):
         return files_valid
 
 
-for version in ["v12"]:
+#for version in ["v12"]:
+for version in ["v12v2_private"]:
     datasets = globals()[f"get_{version}"]()
     index = datasets.copy()
     for year, ydict in datasets.items():
@@ -404,6 +528,8 @@ for version in ["v12"]:
                     index[year][sample][sname] = files
                 else:
                     index[year][sample][sname] = get_files(dataset, version)
+
+
 
     with Path(f"nanoindex_{version}.json").open("w") as f:
         json.dump(index, f, indent=4)
