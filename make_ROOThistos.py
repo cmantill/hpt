@@ -1,12 +1,10 @@
 import sys
 import os
-import pickle
-from pathlib import Path
-import numpy as np
-import hist
-from hpt import utils
-import argparse
 import json
+import ROOT  # Import ROOT for histogram handling
+import argparse
+from hpt import utils
+import numpy as np
 
 # Argument parser for command-line input
 parser = argparse.ArgumentParser(description="Process histograms for a given year.")
@@ -14,23 +12,20 @@ parser.add_argument("year", type=str, help="Year for data processing")
 args = parser.parse_args()
 
 # Use the provided year
-year = args.year  # 2023
-
+year = args.year  # Example: "2023"
 
 MAIN_DIR = "/Users/gbibim/Here/genZ/data"
-#dir_name = "children" #"new"  # data for older samples new for the files with lhe variables
-dir_name = "PNetchildren" 
-path_to_dir = f"{MAIN_DIR}/{dir_name}/" 
+dir_name = "PNetchildren"
+path_to_dir = f"{MAIN_DIR}/{dir_name}/"
 
-
-# Define samples file
-args.samples_file = f"samples.json"
 # Load samples from JSON file
+args.samples_file = "samples.json"
 with open(args.samples_file, "r") as f:
     samples = json.load(f)
 
 dirs = {path_to_dir: samples}
 
+# Define columns to load
 load_columns = [
     ("weight", 1),
     ("ak8FatJetPt", 1),
@@ -49,40 +44,32 @@ load_columns_V = load_columns + [
     ("GenVis_cc", 1),
     ("GenVis_cs", 1),
 ]
-    
 
 # Define pt bins
 ptbins = np.array([450, 500, 550, 600, 675, 800, 1200])
+msd_nbins = 24  # Number of bins
+msd_min, msd_max = 40, 201  # Range of mSD
 
-
-
-# Define histogram axes
-msd_axis = hist.axis.Regular(24, 40, 201, name="msd", label="mSD [GeV]")  
-
-# Initialize histogram dictionary
+# Initialize a dictionary to store histograms
 histograms = {}
 
 for category in samples.keys():
     histograms[category] = {
-        "pass": {bin_edge: hist.Hist(msd_axis) for bin_edge in ptbins[:-1]},
-        "fail": {bin_edge: hist.Hist(msd_axis) for bin_edge in ptbins[:-1]},
+        "pass": {bin_edge: ROOT.TH1F(f"{category}_pass_{bin_edge}", f"{category} Pass {bin_edge}",
+                                     msd_nbins, msd_min, msd_max) for bin_edge in ptbins[:-1]},
+        "fail": {bin_edge: ROOT.TH1F(f"{category}_fail_{bin_edge}", f"{category} Fail {bin_edge}",
+                                     msd_nbins, msd_min, msd_max) for bin_edge in ptbins[:-1]},
     }
 
+# Function to find the pt bin for each event
 def get_ptbin(pt):
-    """Returns an array of bin lower edges corresponding to pt values."""
-    pt = np.asarray(pt)  # Ensure pt is a NumPy array
-
-    # Get the bin for each element in pt
-    bins = np.digitize(pt, ptbins) - 1  # Find which bin each pt belongs to
-
-    # Map bins to lower edge of corresponding ptbin, handling out-of-range cases
+    bins = np.digitize(pt, ptbins) - 1
     bins[bins < 0] = 0  # Assign lowest bin if pt is too small
     bins[bins >= len(ptbins) - 1] = len(ptbins) - 2  # Assign highest valid bin
+    return ptbins[bins]  # Return corresponding bin lower edge
 
-    return ptbins[bins]  # Return the corresponding bin lower edge
-
-# Function to fill histograms
-def fill_mass(events, zto, sample):
+# Function to fill ROOT histograms
+def fill_mass(events, category, sample):
     for key, data in events.items():
         weight = data["finalWeight"]
         msd = data["ak8FatJetmsoftdrop"][0]
@@ -97,32 +84,30 @@ def fill_mass(events, zto, sample):
         # Compute discriminator
         Txbb = Pxbb / (Pxbb + PQCD)
 
-        HLTs = ( data["AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35"][0] |
-            data["AK8PFJet230_SoftDropMass40_PNetBB0p06"][0] 
-        )
+        # Apply selection criteria
+        HLTs = (data["AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35"][0] |
+                data["AK8PFJet230_SoftDropMass40_PNetBB0p06"][0])
+        
+        selection = (msd > 40) & HLTs & (Txbb > 0.95) & (pt > 450)
+        fail = (Txbb < 0.95) & (msd > 40) & HLTs & (pt > 450)
 
-        selection = (msd > 40) & (HLTs) & (Txbb>0.95) 
-        fail = (Txbb<0.95) & (msd > 40) & (HLTs) 
-
-        # Get ptbin for each pt value
+        # Get corresponding pt bins
         ptbins_selected = get_ptbin(pt[selection])
         ptbins_fail = get_ptbin(pt[fail])
 
-        # Fill histograms per ptbin
+        # Fill histograms
         for pbin, msd_val, weight_val in zip(ptbins_selected, msd[selection], weight[selection]):
-            histograms[category]["pass"][pbin].fill(msd_val, weight=weight_val)
+            histograms[category]["pass"][pbin].Fill(msd_val, weight_val)
 
         for pbin, msd_val, weight_val in zip(ptbins_fail, msd[fail], weight[fail]):
-            histograms[category]["fail"][pbin].fill(msd_val, weight=weight_val)
+            histograms[category]["fail"][pbin].Fill(msd_val, weight_val)
 
         # Clear intermediate arrays
         del weight, msd, Pxbb, PQCD, selection, HLTs, fail, ptbins_selected, ptbins_fail
 
-
 # Process samples
 for category, sample_list in samples.items():
     for input_dir, dirs_samples in dirs.items():
-        # Loop through each sample individually to avoid loading everything at once
         for sample in sample_list:
             try:
                 # Load only one sample at a time
@@ -137,8 +122,7 @@ for category, sample_list in samples.items():
                 )
 
                 # Fill histograms with the loaded sample
-                fill_mass(events, category, sample)  # See function definition below
-                #fill_discriminator(events, zto, sample)  # See function definition
+                fill_mass(events, category, sample)
 
             except KeyError as e:
                 print(f"Warning: Missing key {e} in sample {sample}. Skipping.")
@@ -146,12 +130,17 @@ for category, sample_list in samples.items():
             # Ensure the sample is deleted from memory after use
             del events
 
+# Save histograms to a ROOT file
+output_file = f"histograms_{year}.root"
+root_file = ROOT.TFile(output_file, "RECREATE")
 
-# Define the output file
-output_file = f"histograms_{year}.pkl"
+# Write histograms to the ROOT file
+for category in histograms.keys():
+    for ptbin, histo in histograms[category]["pass"].items():
+        histo.Write()  # Save pass histograms
+    for ptbin, histo in histograms[category]["fail"].items():
+        histo.Write()  # Save fail histograms
 
-# Save histograms to a pickle file
-with open(output_file, "wb") as f:
-    pickle.dump(histograms, f)
-
+# Close ROOT file
+root_file.Close()
 print(f"Histograms saved to {output_file}")
