@@ -6,12 +6,12 @@ import ROOT
 import os
 import sys
 from pathlib import Path
+import ROOT
+
 
 # Initialize rhalphalib
 rl.util.install_roofit_helpers()
 rl.ParametericSample.PreferRooParametricHist = False
-
-
 
 # Define output directory
 output_dir = Path("rhalphabet_datacards")
@@ -72,74 +72,22 @@ def get_hist(process, region, ptbin, histograms):
         raise KeyError(f"Ptbin '{ptbin}' not found in histograms for process '{process}', region '{region}'.")
 
     hist = histograms[process][region][ptbin]
-    print(f"hist variances: {hist.variances()}")  # Print variances
-    sumw2 = hist.variances(flow=False) if hist.variances() is not None else np.zeros_like(hist)  # Variances
-    print(f"sumw2: {sumw2}")
+
 
     binning = hist.axes[0].edges  # Get bin edges
     obs_name = hist.axes[0].name  # Observable name (e.g., "msd")
+    sumw2 = np.zeros_like(hist)
+
+    return (np.array(hist), binning, obs_name, sumw2)
 
 
-    return (np.array(hist), binning, obs_name, np.array(sumw2))
-
-import ROOT
-import numpy as np
-
-def get_histogram_from_root(year, category, pass_fail, ptbin, obs):
-    """
-    Retrieve histograms from a ROOT file and return it as a numpy-compatible format.
-
-    Parameters:
-    - year (str): Year of the dataset.
-    - category (str): Sample category (e.g., "QCD").
-    - pass_fail (str): "pass" or "fail" selection.
-    - ptbin (int): The pt bin value.
-    - obs (object): Observable with binning information.
-
-    Returns:
-    - tuple: (sumw, binning, obs_name, sumw2) where:
-      - sumw is the bin content (numpy array)
-      - binning is the bin edges from the observable
-      - obs_name is the observable name
-      - sumw2 is the sum of squared weights (errors)
-    """
-
-
-    # Open ROOT file
-    root_filename = f"histograms_{year}.root"
-    f = ROOT.TFile.Open(root_filename, "READ")
-
-    if not f or f.IsZombie():
-        raise FileNotFoundError(f"Could not open ROOT file: {root_filename}")
-
-    # Construct histogram name
-    hist_name = f"{category}_{pass_fail}_{ptbin}"
-    print(f"Extracting histogram: {hist_name}")
-
-    # Get the histogram
-    h = f.Get(hist_name)
-    if not h:
-        raise ValueError(f"Histogram '{hist_name}' not found in {root_filename}")
-
-    # Extract bin edges directly from ROOT histogram
-    binning = np.array([h.GetBinLowEdge(i) for i in range(1, h.GetNbinsX() + 2)])
-
-    # Prepare sumw and sumw2 arrays
-    sumw = np.array([h.GetBinContent(i) for i in range(1, h.GetNbinsX() + 1)])
-    sumw2 = np.array([h.GetBinError(i)**2 for i in range(1, h.GetNbinsX() + 1)])
-
-    # Close the ROOT file
-    f.Close()
-
-    return (sumw, binning, obs.name, sumw2)
 
 def model_rhalphabet():
 
     ######## SETTING IT UP ########
     years = ["2023"]
     # Extract structured templates
-    #histograms = get_templates(years)
-    #print(histograms)
+    histograms = get_templates(years)
 
     jec = rl.NuisanceParameter("CMS_jec", "lnN")
     massScale = rl.NuisanceParameter("CMS_msdScale", "shape")
@@ -150,14 +98,15 @@ def model_rhalphabet():
     # Define the pt bins
     ptbins = np.array([450, 500, 550, 600, 675, 800, 1200]) #  500, 550, 600, 675, 800,
     npt = len(ptbins) - 1
+
     # Extract binning information
-    msdbins = np.linspace(40, 201, 25)
+    #msdbins = np.linspace(40, 201, 25)
+
+    msd_axis = histograms["QCD"]["pass"][ptbins[0]].axes[0]  # First pt bin for binning info
+    msdbins = msd_axis.edges
+    #print(msdbins)
+
     msd = rl.Observable("msd", msdbins)
-
-    # FOR PICKLES
-    #msd_axis = histograms["QCD"]["pass"][ptbins[0]].axes[0]  # First pt bin for binning info
-    #msd_binning = msd_axis.edges
-
 
     # here we derive these all at once with 2D array
     ptpts, msdpts = np.meshgrid(ptbins[:-1] + 0.3 * np.diff(ptbins), msdbins[:-1] + 0.5 * np.diff(msdbins), indexing="ij")
@@ -179,13 +128,9 @@ def model_rhalphabet():
         qcdmodel.addChannel(passCh)
 
         # FOR PICKLES
-        #failTempl = get_hist("QCD", "fail", ptbin, histograms)
-        #passTempl = get_hist("QCD", "pass", ptbin, histograms)
+        failTempl = get_hist("QCD", "fail", ptbin, histograms)
+        passTempl = get_hist("QCD", "pass", ptbin, histograms)
         
-        # FOR ROOT
-        failTempl = get_histogram_from_root("2023", "QCD", "fail", ptbin, msd)
-        passTempl = get_histogram_from_root("2023", "QCD", "pass", ptbin, msd)
-
         failCh.setObservation(failTempl, read_sumw2=True)
         passCh.setObservation(passTempl, read_sumw2=True)
 
@@ -194,44 +139,32 @@ def model_rhalphabet():
 
     # Compute QCD efficiency
     qcdeff = qcdpass / qcdfail
-    #tf_MCtempl = rl.BernsteinPoly("tf_MCtempl", (2, 2), ["pt", "rho"], limits=(0, 10))
+    print(f"QCD pass: {qcdpass}, fail: {qcdfail}, eff: {qcdeff}")
+    #tf_MCtempl = rl.BernsteinPoly("tf_MCtempl", (2, 2), ["pt", "rho"], limits=(0, 10))    #OLD
 
-    tf_MCtempl = rl.BasisPoly("tf_MCtempl", (2,2), ["pt", "rho"], basis='Bernstein', limits=(0, 10))
+    tf_MCtempl = rl.BasisPoly("tf_MCtempl", (1,1), ["pt", "rho"], basis='Bernstein', limits=(0, 10))  # (2,2) original
 
     tf_MCtempl_params = qcdeff * tf_MCtempl(ptscaled, rhoscaled)
-
-    #print(f"Available qcdmodel channels: {qcdmodel.channels}")
+    
     # Apply transfer function to QCD
     for ptbin in ptbins[:-1]:
         failCh = qcdmodel[f"ptbin{ptbin}fail"]
         passCh = qcdmodel[f"ptbin{ptbin}pass"]
-        failObs = failCh.getObservation()
-        failObs = failObs[0]  # Extract sumw (bin counts)
+        failObs = failCh.getObservation()[0]
+        #failObs = failObs[0]  # Extract sumw (bin counts)
         qcdparams = np.array([
             rl.IndependentParameter(f"qcdparam_ptbin{ptbin}_msdbin{i}", 0)
             for i in range(msd.nbins)
         ])
-        sigmascale = 10.0
+        sigmascale = 10.0 # original 10 (works for fit strategy 0 and 2)   # 3.0 for fitstrategy 1 
+        #scaledparams = failObs * (1 + sigmascale / np.maximum(1.0, np.sqrt(failObs))) ** np.array(qcdparams, dtype=object)
         scaledparams = failObs * (1 + sigmascale / np.maximum(1.0, np.sqrt(failObs))) ** qcdparams
 
-        #fail_qcd = rl.ParametericSample(f"{failCh.name}qcd", rl.Sample.BACKGROUND, msd, scaledparams)
-        fail_qcd = rl.ParametericSample(f"{failCh.name}_qcd".replace(" ", ""), rl.Sample.BACKGROUND, msd, scaledparams)
-        print(f"failCh.name: '{failCh.name}'")
-        print(f"fail_qcd.name: '{fail_qcd.name}'")
-        print(f"Does it match? {fail_qcd.name.startswith(failCh.name)}")
-
+        fail_qcd = rl.ParametericSample(f"{failCh.name}_qcd", rl.Sample.BACKGROUND, msd, scaledparams)
         failCh.addSample(fail_qcd)
-        print(f"ptscaled: {ptscaled}")
-        #pass_qcd = rl.TransferFactorSample(f"ptbin{ptbin}pass", rl.Sample.BACKGROUND, tf_MCtempl_params[ptbin], fail_qcd)
-        # Convert ptbin (which is a bin edge) to an index
-        ptbin_index = np.where(ptbins[:-1] == ptbin)[0][0]  # Find the index
-
-        # Debugging print
-        print(f"ptbin: {ptbin}, converted to index: {ptbin_index}")
-
         # Use the index instead of the bin lower edge
-        pass_qcd = rl.TransferFactorSample(f"{passCh.name}_qcd".replace(" ", ""), rl.Sample.BACKGROUND, tf_MCtempl_params[ptbin_index], fail_qcd)
-        #pass_qcd = rl.TransferFactorSample(f"{passCh.name}_qcd".replace(" ", ""), rl.Sample.BACKGROUND, tf_MCtempl_params[], fail_qcd)
+        ptbin_index = np.where(ptbins[:-1] == ptbin)[0][0]  # Find the index
+        pass_qcd = rl.TransferFactorSample(f"{passCh.name}_qcd", rl.Sample.BACKGROUND, tf_MCtempl_params[ptbin_index, :], fail_qcd)
         passCh.addSample(pass_qcd)
 
     # Fit QCD Model with RooFit
@@ -241,43 +174,57 @@ def model_rhalphabet():
         obs,
         ROOT.RooFit.Extended(True),
         ROOT.RooFit.SumW2Error(True),
-        ROOT.RooFit.Strategy(2),
+        ROOT.RooFit.Strategy(0),  # 0: fast fit, 1: more accurate fit, 2: very accurate fit
         ROOT.RooFit.Save(),
         ROOT.RooFit.Minimizer("Minuit2", "migrad"),
         ROOT.RooFit.PrintLevel(-1),
     )
+    
+
     qcdfit_ws.add(qcdfit)
     if "pytest" not in sys.modules:
         qcdfit_ws.writeToFile(str(output_dir / "qcdfit.root"))
     if qcdfit.status() != 0:
         raise RuntimeError("Could not fit QCD")
     
+    #print("QCD Fit Result:")
+    #qcdfit.Print("v")
+ 
+
+    # Decorrelate nuisance parameters 
     param_names = [p.name for p in tf_MCtempl.parameters.reshape(-1)]
-    decoVector = rl.DecorrelatedNuisanceVector.fromRooFitResult(tf_MCtempl.name + "_deco", qcdfit, param_names)
-    tf_MCtempl.parameters = decoVector.correlated_params.reshape(tf_MCtempl.parameters.shape)
+    #decoVector = rl.DecorrelatedNuisanceVector.fromRooFitResult(tf_MCtempl.name + "_deco", qcdfit, param_names)
+    #print("Decorrelated parameters:", decoVector.correlated_params)
+    #tf_MCtempl.parameters = decoVector.correlated_params.reshape(tf_MCtempl.parameters.shape)
     tf_MCtempl_params_final = tf_MCtempl(ptscaled, rhoscaled)
-    tf_dataResidual = rl.BernsteinPoly("tf_dataResidual", (2, 2), ["pt", "rho"], limits=(0, 10))
-    tf_dataResidual_params = tf_dataResidual(ptscaled, rhoscaled)
-    tf_params = qcdeff * tf_MCtempl_params_final * tf_dataResidual_params
+    #tf_dataResidual = rl.BernsteinPoly("tf_dataResidual", (2, 2), ["pt", "rho"], limits=(0, 10))
+    #tf_dataResidual_params = tf_dataResidual(ptscaled, rhoscaled)
+    tf_params = qcdeff * tf_MCtempl_params_final #* tf_dataResidual_params
 
-
+ 
+    
     ######## BUILDING THE ACTUAL FIT MODEL ########
     # Build the signal model   
     model = rl.Model("testModel")
-    sigs = ['WH', 'ZH', 'VBF', 'ttH', 'ggH', 'data']
-    for ptbin in range(npt):
+    sigs = ['WH', 'ZH', 'VBF', 'ttH', 'ggH']
+    for ptbin in ptbins[:-1]:
         for region in ["pass", "fail"]:
-            ch = rl.Channel(f"ptbin{ptbin}_{region}")
+            ch = rl.Channel(f"ptbin{ptbin}{region}")
             model.addChannel(ch)
 
             for process, templ in histograms.items():
-                if process == "QCD":
+                if process == "QCD" or process == "data":
                     continue
 
-                templ = templ[region]#[ptbin]
+                templ = templ[region][ptbin]
+                #print(templ)
                 stype = rl.Sample.SIGNAL if process in sigs else rl.Sample.BACKGROUND
-                sample = rl.TemplateSample(f"ptbin{ptbin}_{region}_{process}", stype, templ)
-
+                sample = rl.TemplateSample(f"{ch.name}_{process}", stype, templ)
+                
+                templ_array = np.array(templ)
+                print(f"DEBUG: {ch.name}_{process} has min value: {templ_array.min()}")
+                if templ_array.min() < 0:
+                    print(templ)
                 # mock systematics
                 jecup_ratio = np.random.normal(loc=1, scale=0.05, size=msd.nbins)
                 msdUp = np.linspace(0.9, 1.1, msd.nbins)
@@ -291,14 +238,14 @@ def model_rhalphabet():
                 ch.addSample(sample)
 
             # Set observed data
-            data_obs = templates_summed[region][ptbin]
-            ch.setObservation(data_obs)
+            data_obs = get_hist("data", region, ptbin, histograms)
+            ch.setObservation(data_obs, read_sumw2=True)
 
     # Define QCD model
-    for ptbin in range(npt):
-        failCh = model[f"ptbin{ptbin}_fail"]
-        passCh = model[f"ptbin{ptbin}_pass"]
-        failObs = failCh.getObservation()
+    for ptbin in ptbins[:-1]:
+        failCh = model[f"ptbin{ptbin}fail"]
+        passCh = model[f"ptbin{ptbin}pass"]
+        failObs = failCh.getObservation()[0]
         initial_qcd = failObs.astype(float)
         for sample in failCh:
             initial_qcd -= sample.getExpectation(nominal=True)
@@ -310,21 +257,16 @@ def model_rhalphabet():
         ])
         sigmascale = 10.0
         scaledparams = failObs * (1 + sigmascale / np.maximum(1.0, np.sqrt(failObs))) ** qcdparams
-        fail_qcd = rl.ParametericSample(f"ptbin{ptbin}_fail_qcd", rl.Sample.BACKGROUND, msd, scaledparams)
+        fail_qcd = rl.ParametericSample(f"ptbin{ptbin}fail_qcd", rl.Sample.BACKGROUND, msd, scaledparams)
         failCh.addSample(fail_qcd)
-        pass_qcd = rl.TransferFactorSample(f"ptbin{ptbin}_pass_qcd", rl.Sample.BACKGROUND, tf_params[ptbin], fail_qcd)
+        # Use the index instead of the bin lower edge
+        ptbin_index = np.where(ptbins[:-1] == ptbin)[0][0]  # Find the index
+        pass_qcd = rl.TransferFactorSample(f"ptbin{ptbin}pass_qcd", rl.Sample.BACKGROUND, tf_params[ptbin_index,:], fail_qcd)
         passCh.addSample(pass_qcd)
 
-        tqqpass = passCh["tqq"]
-        tqqfail = failCh["tqq"]
-        tqqPF = tqqpass.getExpectation(nominal=True).sum() / tqqfail.getExpectation(nominal=True).sum()
-        tqqpass.setParamEffect(tqqeffSF, 1 * tqqeffSF)
-        tqqfail.setParamEffect(tqqeffSF, (1 - tqqeffSF) * tqqPF + 1)
-        tqqpass.setParamEffect(tqqnormSF, 1 * tqqnormSF)
-        tqqfail.setParamEffect(tqqnormSF, 1 * tqqnormSF)
 
     # Save workspace and model
-    ws_path = output_dir / "testModel.json"
+    ws_path = output_dir / "testModel"
     pkl_path = output_dir / "testModel.pkl"
 
     with open(pkl_path, "wb") as fout:
@@ -340,5 +282,4 @@ if __name__ == "__main__":
     model_rhalphabet()
 
 
-############################################################################################################
 

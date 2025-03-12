@@ -57,7 +57,7 @@ ptbins = np.array([450, 500, 550, 600, 675, 800, 1200])
 
 
 # Define histogram axes
-msd_axis = hist.axis.Regular(24, 40, 201, name="msd", label="mSD [GeV]")  
+msd_axis = hist.axis.Regular(24, 40, 200, name="msd", label="mSD [GeV]")  
 
 # Initialize histogram dictionary
 histograms = {}
@@ -101,8 +101,8 @@ def fill_mass(events, zto, sample):
             data["AK8PFJet230_SoftDropMass40_PNetBB0p06"][0] 
         )
 
-        selection = (msd > 40) & (HLTs) & (Txbb>0.95) 
-        fail = (Txbb<0.95) & (msd > 40) & (HLTs) 
+        selection = (msd > 40) & (HLTs) & (Txbb>0.90) & (pt > 450) & (pt < 1200) & (msd < 200)
+        fail = (Txbb<0.95) & (msd > 40) & (HLTs) & (pt > 450) & (pt < 1200) & (msd < 200)
 
         # Get ptbin for each pt value
         ptbins_selected = get_ptbin(pt[selection])
