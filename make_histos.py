@@ -52,7 +52,7 @@ load_columns_V = load_columns + [
     
 
 # Define pt bins
-ptbins = np.array([450, 500, 550, 600, 675, 800, 1200])
+ptbins = np.array([450,  500, 550, 600, 675, 800, 1200]) # 500, 550, 600, 675, 800,
 
 
 
@@ -150,7 +150,7 @@ for category, sample_list in samples.items():
 # Define the output file
 output_file = f"histograms_{year}.pkl"
 
-# Save histograms to a pickle file
+# Save histograms to a pickle 
 with open(output_file, "wb") as f:
     pickle.dump(histograms, f)
 

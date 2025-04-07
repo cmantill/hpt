@@ -38,10 +38,20 @@ def get_templates(years):
                     continue  # Skip if region is missing
 
                 for ptbin, hist in hist_dict[region].items():
+                    #if ptbin not in templates_summed[process][region]:
+                    #    templates_summed[process][region][ptbin] = hist.copy()  # Initialize
+                    #else:
+                    #    templates_summed[process][region][ptbin] += hist  # Sum across years
+
                     if ptbin not in templates_summed[process][region]:
-                        templates_summed[process][region][ptbin] = hist.copy()  # Initialize
+                        h = hist.copy()
                     else:
-                        templates_summed[process][region][ptbin] += hist  # Sum across years
+                        h = templates_summed[process][region][ptbin] + hist
+
+                    # Patch negative bins to zero
+                    np_array = np.asarray(h)
+                    np_array[np_array < 0] = 0
+                    templates_summed[process][region][ptbin] = h
 
     return templates_summed
 
@@ -140,9 +150,9 @@ def model_rhalphabet():
     # Compute QCD efficiency
     qcdeff = qcdpass / qcdfail
     print(f"QCD pass: {qcdpass}, fail: {qcdfail}, eff: {qcdeff}")
-    #tf_MCtempl = rl.BernsteinPoly("tf_MCtempl", (2, 2), ["pt", "rho"], limits=(0, 10))    #OLD
+    tf_MCtempl = rl.BernsteinPoly("tf_MCtempl", (1, 1), ["pt", "rho"], limits=(0, 10))    #OLD
 
-    tf_MCtempl = rl.BasisPoly("tf_MCtempl", (1,1), ["pt", "rho"], basis='Bernstein', limits=(0, 10))  # (2,2) original
+    #tf_MCtempl = rl.BasisPoly("tf_MCtempl", (1,1), ["pt", "rho"], basis='Bernstein', limits=(0, 10))  # (2,2) original
 
     tf_MCtempl_params = qcdeff * tf_MCtempl(ptscaled, rhoscaled)
     
@@ -150,7 +160,8 @@ def model_rhalphabet():
     for ptbin in ptbins[:-1]:
         failCh = qcdmodel[f"ptbin{ptbin}fail"]
         passCh = qcdmodel[f"ptbin{ptbin}pass"]
-        failObs = failCh.getObservation()[0]
+        failObs = np.maximum(failCh.getObservation()[0], 1e-3)  # Avoid division by zero
+        #failObs = failCh.getObservation()[0]
         #failObs = failObs[0]  # Extract sumw (bin counts)
         qcdparams = np.array([
             rl.IndependentParameter(f"qcdparam_ptbin{ptbin}_msdbin{i}", 0)
@@ -177,7 +188,7 @@ def model_rhalphabet():
         ROOT.RooFit.Strategy(0),  # 0: fast fit, 1: more accurate fit, 2: very accurate fit
         ROOT.RooFit.Save(),
         ROOT.RooFit.Minimizer("Minuit2", "migrad"),
-        ROOT.RooFit.PrintLevel(-1),
+        ROOT.RooFit.PrintLevel(1),
     )
     
 
@@ -193,7 +204,7 @@ def model_rhalphabet():
 
     # Decorrelate nuisance parameters 
     param_names = [p.name for p in tf_MCtempl.parameters.reshape(-1)]
-    #decoVector = rl.DecorrelatedNuisanceVector.fromRooFitResult(tf_MCtempl.name + "_deco", qcdfit, param_names)
+    decoVector = rl.DecorrelatedNuisanceVector.fromRooFitResult(tf_MCtempl.name + "_deco", qcdfit, param_names)
     #print("Decorrelated parameters:", decoVector.correlated_params)
     #tf_MCtempl.parameters = decoVector.correlated_params.reshape(tf_MCtempl.parameters.shape)
     tf_MCtempl_params_final = tf_MCtempl(ptscaled, rhoscaled)
@@ -245,7 +256,8 @@ def model_rhalphabet():
     for ptbin in ptbins[:-1]:
         failCh = model[f"ptbin{ptbin}fail"]
         passCh = model[f"ptbin{ptbin}pass"]
-        failObs = failCh.getObservation()[0]
+        failObs = np.maximum(failCh.getObservation()[0], 1e-3)  # Avoid division by zero
+        #failObs = failCh.getObservation()[0]
         initial_qcd = failObs.astype(float)
         for sample in failCh:
             initial_qcd -= sample.getExpectation(nominal=True)
@@ -266,8 +278,8 @@ def model_rhalphabet():
 
 
     # Save workspace and model
-    ws_path = output_dir / "testModel"
-    pkl_path = output_dir / "testModel.pkl"
+    ws_path = output_dir / "last_testModel"
+    pkl_path = output_dir / "last_testModel.pkl"
 
     with open(pkl_path, "wb") as fout:
         pickle.dump(model, fout)
